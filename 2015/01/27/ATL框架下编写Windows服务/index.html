@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>ATL框架下编写Windows服务 | 不插电码农</title>
+  <meta name="description" content="前段时间有个开发一个Windows服务的需求,且不能使用.NET, 之后在对比了Win32 和 ATL两种编写Windows服务的途径, 还是选择了后者. Mark几个地方  重载InitializeSecurity()函数12345678910HRESULT InitializeSecurity() throw()&amp;#123;    // TODO : 调用 CoInitializeSecuri">
+<meta name="keywords" content="ATL,Windows,C#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ATL框架下编写Windows服务">
+<meta property="og:url" content="https://unpluggedcoder.me/2015/01/27/ATL框架下编写Windows服务/index.html">
+<meta property="og:site_name" content="不插电码农">
+<meta property="og:description" content="前段时间有个开发一个Windows服务的需求,且不能使用.NET, 之后在对比了Win32 和 ATL两种编写Windows服务的途径, 还是选择了后者. Mark几个地方  重载InitializeSecurity()函数12345678910HRESULT InitializeSecurity() throw()&amp;#123;    // TODO : 调用 CoInitializeSecuri">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-28T16:43:01.007Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ATL框架下编写Windows服务">
+<meta name="twitter:description" content="前段时间有个开发一个Windows服务的需求,且不能使用.NET, 之后在对比了Win32 和 ATL两种编写Windows服务的途径, 还是选择了后者. Mark几个地方  重载InitializeSecurity()函数12345678910HRESULT InitializeSecurity() throw()&amp;#123;    // TODO : 调用 CoInitializeSecuri">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://unpluggedcoder.me/2015/01/27/ATL框架下编写Windows服务/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="不插电码农" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+</head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/unpluggedcoder" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">不插电码农</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">A coder, love sketch and drumming.</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Inside the GreatWall</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/waterloosunset" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://gitlab.com/unpluggedcoder" target="_blank" title="Gitlab" data-toggle="tooltip" data-placement="top"><i class="icon icon-gitlab"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>又换了新的hexo主题...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/杂项/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/DrumCover/">DrumCover</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unix-Linux/">Unix/Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows/">Windows</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据相关/">数据相关</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂项/">杂项</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/涂鸦/">涂鸦</a><span class="category-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ATL/" style="font-size: 13px;">ATL</a> <a href="/tags/AWS/" style="font-size: 13px;">AWS</a> <a href="/tags/Aliyun/" style="font-size: 13px;">Aliyun</a> <a href="/tags/BT-Sync/" style="font-size: 13px;">BT Sync</a> <a href="/tags/C/" style="font-size: 13.33px;">C#</a> <a href="/tags/C-11/" style="font-size: 13.83px;">C++11</a> <a href="/tags/C-C/" style="font-size: 14px;">C/C++</a> <a href="/tags/Celery/" style="font-size: 13px;">Celery</a> <a href="/tags/Data-Visualization/" style="font-size: 13px;">Data Visualization</a> <a href="/tags/DataPipeline/" style="font-size: 13px;">DataPipeline</a> <a href="/tags/Django/" style="font-size: 13.17px;">Django</a> <a href="/tags/Django-Rest-Framework/" style="font-size: 13px;">Django Rest Framework</a> <a href="/tags/Drum/" style="font-size: 13px;">Drum</a> <a href="/tags/GCC/" style="font-size: 13.5px;">GCC</a> <a href="/tags/Linux/" style="font-size: 13.33px;">Linux</a> <a href="/tags/MVVM/" style="font-size: 13px;">MVVM</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/ModeAnalytics/" style="font-size: 13px;">ModeAnalytics</a> <a href="/tags/MySQLdb/" style="font-size: 13px;">MySQLdb</a> <a href="/tags/Poco/" style="font-size: 13.17px;">Poco</a> <a href="/tags/Poco-C/" style="font-size: 13.17px;">Poco C++</a> <a href="/tags/Python/" style="font-size: 13.83px;">Python</a> <a href="/tags/RDS/" style="font-size: 13.17px;">RDS</a> <a href="/tags/RedShift/" style="font-size: 13px;">RedShift</a> <a href="/tags/Resilio-Sync/" style="font-size: 13px;">Resilio Sync</a> <a href="/tags/SQL/" style="font-size: 13px;">SQL</a> <a href="/tags/SSH/" style="font-size: 13px;">SSH</a> <a href="/tags/SmartPointer/" style="font-size: 13px;">SmartPointer</a> <a href="/tags/Unix-Linux/" style="font-size: 13px;">Unix/Linux</a> <a href="/tags/WPF/" style="font-size: 13px;">WPF</a> <a href="/tags/Windows/" style="font-size: 13.33px;">Windows</a> <a href="/tags/asynchronous/" style="font-size: 13px;">asynchronous</a> <a href="/tags/auto-ptr/" style="font-size: 13px;">auto_ptr</a> <a href="/tags/c/" style="font-size: 13px;">c#</a> <a href="/tags/exception/" style="font-size: 13px;">exception</a> <a href="/tags/jabberd2/" style="font-size: 13.83px;">jabberd2</a> <a href="/tags/logging/" style="font-size: 13px;">logging</a> <a href="/tags/pip/" style="font-size: 13px;">pip</a> <a href="/tags/quota/" style="font-size: 13px;">quota</a> <a href="/tags/shared-ptr/" style="font-size: 13px;">shared_ptr</a> <a href="/tags/unique-ptr/" style="font-size: 13px;">unique_ptr</a> <a href="/tags/weak-ptr/" style="font-size: 13px;">weak_ptr</a> <a href="/tags/xmpp/" style="font-size: 13.83px;">xmpp</a> <a href="/tags/事件/" style="font-size: 13px;">事件</a> <a href="/tags/低智商社会/" style="font-size: 13px;">低智商社会</a> <a href="/tags/委托/" style="font-size: 13px;">委托</a> <a href="/tags/小度WIFI/" style="font-size: 13px;">小度WIFI</a> <a href="/tags/并发/" style="font-size: 13px;">并发</a> <a href="/tags/性能/" style="font-size: 13px;">性能</a> <a href="/tags/爬虫/" style="font-size: 13px;">爬虫</a> <a href="/tags/素描/" style="font-size: 13.67px;">素描</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/杂项/">杂项</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/03/27/[译]软件性能仍然重要吗？/" class="title">[译]软件性能仍然重要吗？</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-03-27T15:03:30.000Z" itemprop="datePublished">2019-03-27</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Python/">Python</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/05/03/Asynchronous-logging-with-Python/" class="title">asynchronous logging with Python</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-05-02T17:17:02.000Z" itemprop="datePublished">2018-05-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/杂项/">杂项</a>
+              </p>
+              <p class="item-title">
+                <a href="/2017/11/05/ssh-remote-forward-for-resilio-sync/" class="title">利用SSH远程端口转发解决Resilio Sync无法连接问题</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2017-11-05T14:11:24.000Z" itemprop="datePublished">2017-11-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2017/10/29/Migrate-to-Hexo/" class="title">Migrate to Hexo</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2017-10-29T15:05:33.000Z" itemprop="datePublished">2017-10-29</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Python/">Python</a>
+              </p>
+              <p class="item-title">
+                <a href="/2017/09/14/创建Django-Rest-Framework的方法序列化视图/" class="title">创建Django Rest Framework的方法序列化视图</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2017-09-14T03:53:53.000Z" itemprop="datePublished">2017-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-ATL框架下编写Windows服务" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ATL框架下编写Windows服务
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2015/01/27/ATL框架下编写Windows服务/" class="article-date">
+	  <time datetime="2015-01-27T02:46:13.000Z" itemprop="datePublished">2015-01-27</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Windows/">Windows</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/ATL/">ATL</a>, <a class="article-tag-link" href="/tags/C/">C#</a>, <a class="article-tag-link" href="/tags/Windows/">Windows</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2015/01/27/ATL框架下编写Windows服务/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 594(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 2(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>前段时间有个开发一个Windows服务的需求,且不能使用.NET, 之后在对比了Win32 和 ATL两种编写Windows服务的途径, 还是选择了后者.</p>
+<p>Mark几个地方</p>
+<ul>
+<li>重载InitializeSecurity()函数<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HRESULT <span class="title">InitializeSecurity</span><span class="params">()</span> <span class="title">throw</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// TODO : 调用 CoInitializeSecurity 并为服务提供适当的</span></span><br><span class="line">    <span class="comment">// 安全设置</span></span><br><span class="line">    <span class="comment">// 建议 - PKT 级别的身份验证、</span></span><br><span class="line">    <span class="comment">// RPC_C_IMP_LEVEL_IDENTIFY 的模拟级别</span></span><br><span class="line">    <span class="comment">// 以及适当的非 NULL 安全说明符。</span></span><br><span class="line">    <span class="keyword">return</span> CoInitializeSecurity( <span class="literal">NULL</span>, <span class="number">-1</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, RPC_C_AUTHN_LEVEL_NONE,</span><br><span class="line">RPC_C_IMP_LEVEL_IDENTIFY, <span class="literal">NULL</span>, EOAC_NONE, <span class="literal">NULL</span> );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p>重载RegisterAppId函数,注册服务的相关信息</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">HRESULT CXXXXXServiceModule::RegisterAppId(<span class="keyword">bool</span> bService = <span class="literal">false</span>) <span class="keyword">throw</span>()</span><br><span class="line">&#123;</span><br><span class="line">    HRESULT hr = S_OK;</span><br><span class="line">    BOOL res = __super::RegisterAppId(bService);</span><br><span class="line">    <span class="keyword">if</span> (bService)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (IsInstalled())</span><br><span class="line">        &#123;</span><br><span class="line">            SC_HANDLE hSCM = ::OpenSCManagerW(<span class="literal">NULL</span>, <span class="literal">NULL</span>, SC_MANAGER_ALL_ACCESS);</span><br><span class="line">            SC_HANDLE hService = <span class="literal">NULL</span>;</span><br><span class="line">            <span class="keyword">if</span> (hSCM == <span class="literal">NULL</span>)</span><br><span class="line">                hr = AtlHresultFromLastError();</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                hService = ::OpenService(hSCM, m_szServiceName, SERVICE_ALL_ACCESS);</span><br><span class="line">                <span class="keyword">if</span> (hService != <span class="literal">NULL</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    ::ChangeServiceConfig(hService, SERVICE_NO_CHANGE, SERVICE_AUTO_START, <span class="comment">// 服务自启动</span></span><br><span class="line">                    <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, m_szServiceName); <span class="comment">// 通过修改资源IDS_SERVICENAME 修改服务的显示名字</span></span><br><span class="line">                    SERVICE_DESCRIPTION Description;</span><br><span class="line">                    TCHAR szDescription[<span class="number">1024</span>];</span><br><span class="line">                    ZeroMemory(szDescription, <span class="number">1024</span>);</span><br><span class="line">                    ZeroMemory(&amp;amp;Description, <span class="keyword">sizeof</span>(SERVICE_DESCRIPTION));</span><br><span class="line">                    lstrcpy(szDescription, _T(<span class="string">"这里添加服务的描述内容"</span>));</span><br><span class="line">                    Description.lpDescription = szDescription;</span><br><span class="line">                    ::ChangeServiceConfig2(hService, SERVICE_CONFIG_DESCRIPTION, &amp;amp;Description);</span><br><span class="line">                    ::CloseServiceHandle(hService);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    hr = AtlHresultFromLastError();</span><br><span class="line">                ::CloseServiceHandle(hSCM);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> hr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重载<code>run( )</code>函数, 网上有的说重载<code>PreMessageLoop( )</code>函数添加自定义代码,其实看atl头文件, 重载run比较”正宗”.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HRESULT CXXXXXServiceModule::Run(<span class="keyword">int</span> nShowCmd) <span class="keyword">throw</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 添加服务启动的自定义代码</span></span><br><span class="line">    <span class="keyword">return</span> __super::Run(nShowCmd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重载stop( )函数, 添加服务停止的相关代码.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> CXXXXXServiceModule::OnStop() <span class="keyword">throw</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 释放所有资源</span></span><br><span class="line">    __super::OnStop();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>以上这些函数都不能抛出异常,这点很重要, 最好都用<code>try{ } catch(){}</code>块捕获, 如果有异常的话服务的操作就会失败造成服务的无响应.同时为了不让服务的启动和停止超时, 最好开启别的线程去完成任务.</p>
+<blockquote>
+<p>注册服务:  MyService.exe /Service<br>卸载服务:  MyService.exe /UnRegServer</p>
+</blockquote>
+<p>调试/测试服务的时候难免会导致服务进程的崩溃, 服务列表上无法操作, 这时候检查下面几点去清除/卸载服务:</p>
+<ol>
+<li>如果有安装程序, 在添加/删除程序里卸载服务的程序, 前提条件是服务有响应, 并且卸载服务的命令不能有异常和失败;</li>
+<li>在注册表路径<code>[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services]</code>中找到自己的服务,删除;</li>
+<li>在注册表里搜索自己的服务名, 删除所有的键值;</li>
+<li>任务管理器里结束服务进程.</li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://unpluggedcoder.me/2015/01/27/ATL框架下编写Windows服务/" title="ATL框架下编写Windows服务" target="_blank" rel="external">https://unpluggedcoder.me/2015/01/27/ATL框架下编写Windows服务/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/unpluggedcoder" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/unpluggedcoder" target="_blank"><span class="text-dark">不插电码农</span><small class="ml-1x">A coder, love sketch and drumming.</small></a></h3>
+        <div>But his has no time for sketch and drum.</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2015/01/29/在Linux(CentOS)上开启小度WIFI无线AP模式/" title="在Linux(CentOS)上开启小度WIFI无线AP模式"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2014/11/21/Jabberd2 添加动态域名管理功能 (下)/" title="Jabberd2 添加动态域名管理功能 (下)"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,wechat,twitter"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/waterloosunset" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://gitlab.com/unpluggedcoder" target="_blank" title="Gitlab" data-toggle="tooltip" data-placement="top"><i class="icon icon-gitlab"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 不插电码农
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+    <script defer type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-99016428-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+
+
+</body>
+</html>
