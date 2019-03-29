@@ -41,6 +41,8 @@
   <link rel="stylesheet" href="/css/style.css">
   
   
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css">
+  
   
     <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
   
@@ -351,6 +353,13 @@
 
 
         
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
 
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2014/08/29/C#静态类 和 C++静态实例 的构造区别/#comments" class="article-comment-link">评论</a></span>
         
@@ -421,7 +430,7 @@
     
   <section id="comments">
   	
-      <div id="vcomments"></div>
+
     
   </section>
 
@@ -516,35 +525,32 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
    
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 
 
 
 
    
     
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/valine"></script>
-  <script type="text/javascript">
-  var GUEST = ['nick', 'mail', 'link'];
-  var meta = 'nick,mail,link';
-  meta = meta.split(',').filter(function(item) {
-    return GUEST.indexOf(item) > -1;
-  });
-  new Valine({
-    el: '#vcomments',
-    verify: false,
-    notify: false,
-    appId: '',
-    appKey: '',
-    placeholder: 'Just go go',
-    avatar: 'mm',
-    meta: meta,
-    pageSize: '10' || 10,
-    visitor: false
-  });
-  </script>
+<script src="//cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js"></script>
+<script>
+var gitment = new Gitment({
+  // id默认为当前页面url，如果url后带参数或锚点，gitment要重新初始化
+  // https://github.com/imsun/gitment/issues/55
+  // 解决方案：id:window.location.pathname,或者将id设置为当前页面标题
+  id: 'C#静态类 和 C++静态实例 的构造区别', 
+  owner: 'unpluggedcoder', // 可以是你的GitHub用户名，也可以是github id
+  repo: 'git@github.com:unpluggedcoder/unpluggedcoder.github.io.git',
+  oauth: {
+    client_id: '7c159b11bc5c4c72a53c',
+    client_secret: '9bd9cf73dd2eb7499771ddd4846ed2cfbc0b161a',
+  }
+})
+gitment.render('comments')
+</script>
 
-     
+
 
 
 
