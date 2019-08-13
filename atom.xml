@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://unpluggedcoder.me/"/>
-  <updated>2019-08-13T16:59:36.785Z</updated>
+  <updated>2019-08-13T17:37:33.451Z</updated>
   <id>https://unpluggedcoder.me/</id>
   
   <author>
@@ -21,21 +21,15 @@
     <link href="https://unpluggedcoder.me/2019/08/14/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
     <id>https://unpluggedcoder.me/2019/08/14/Rust入门失败之基础数据类型/</id>
     <published>2019-08-13T16:43:30.000Z</published>
-    <updated>2019-08-13T16:59:36.785Z</updated>
+    <updated>2019-08-13T17:37:33.451Z</updated>
     
-    <content type="html"><![CDATA[<p>记录Rust入门失败笔记.</p><ul><li><strong>bool</strong><br>  会占一个字节, 从而允许指针指向这个字节的地址.</li></ul><ul><li><strong>numeric</strong><ul><li>不允许隐式转换</li><li>如果需要调用类型的方法, 在有二意的情况下必须显式转换, 例如加后缀: <code>(2.0_f64).sqrt()</code></li><li><code>bool</code>, <code>char</code>, <code>enum</code> 可以转换为任意整型<code>integer</code>, 但反向转换不行, 唯一例外是<code>u8</code>转<code>char</code></li></ul></li></ul><ul><li><strong>char</strong><ul><li>大小32bit</li><li>UNICODE编码</li><li>不允许任何形式的隐式转换</li><li><code>u8</code>是允许 <code>as</code> 转换为char的唯一形式</li></ul></li></ul><ul><li><strong>String</strong><ul><li>不是char数组, 而是UTF-8<strong>变长</strong>序列</li><li>ASCII字符占一个字节, 其余字符占多个不定长字节.</li><li><code>len()</code>方法返回的是字节长度, 而非字符长度</li><li><code>chars().count()</code>返回字符长度</li><li>一个栈上的String变量在内存中表示如下:<br><img src="/images/15657152495840.jpg" alt="String memory model"></li></ul></li></ul><ul><li><p><strong>array</strong>, <strong>vector</strong>, <strong>slices</strong></p><ul><li>下标引用<code>[i]</code>只能用usize类型</li><li><p>一个栈上的vector变量在内存中的布局如下:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_padovan</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> padovan = <span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>];  <span class="comment">// allocated here</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">3</span>..<span class="number">10</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> next = padovan[i-<span class="number">3</span>] + padovan[i-<span class="number">2</span>];</span><br><span class="line">        padovan.push(next);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"P(1..10) = &#123;:?&#125;"</span>, padovan);</span><br><span class="line">&#125;                                   <span class="comment">// dropped here</span></span><br></pre></td></tr></table></figure><p><img src="/images/15657154271374.jpg" alt="vector memory model"></p></li></ul></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>半个月前看完了《The Rust Programming Language》, 但是仍然感觉自己对Rust还是一知半解, 入门失败.<br>随后开始看《Programming rust》影印版, 感觉这本书讲得更好, 作者用了很多图来解释, 这本书也是一本巨厚的参考书类型, 目前啃了一半. so, 把之前的一些读书笔记记下来, 一方面把书读薄, 一方面算是Rust的入门失败笔记.</p><ul><li><strong>bool</strong><br>  会占一个字节, 从而允许指针指向这个字节的地址.</li></ul><ul><li><strong>numeric</strong><ul><li>不允许隐式转换</li><li>如果需要调用类型的方法, 在有二意的情况下必须显式转换, 例如加后缀: <code>(2.0_f64).sqrt()</code></li><li><code>bool</code>, <code>char</code>, <code>enum</code> 可以转换为任意整型<code>integer</code>, 但反向转换不行, 唯一例外是<code>u8</code>转<code>char</code></li></ul></li></ul><ul><li><strong>char</strong><ul><li>大小32bit</li><li>UNICODE编码</li><li>不允许任何形式的隐式转换</li><li><code>u8</code>是允许 <code>as</code> 转换为char的唯一形式</li></ul></li></ul><ul><li><strong>String</strong><ul><li>不是char数组, 而是UTF-8<strong>变长</strong>序列</li><li>ASCII字符占一个字节, 其余字符占多个不定长字节.</li><li><code>len()</code>方法返回的是字节长度, 而非字符长度</li><li><code>chars().count()</code>返回字符长度</li><li>一个栈上的String变量在内存中表示如下:<br><img src="/images/15657152495840.jpg" alt="String memory model"></li></ul></li></ul><ul><li><p><strong>array</strong>, <strong>vector</strong>, <strong>slices</strong></p><ul><li>下标引用<code>[i]</code>只能用usize类型</li><li><p>一个栈上的vector变量在内存中的布局如下:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">print_padovan</span></span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> padovan = <span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>];  <span class="comment">// allocated here</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">3</span>..<span class="number">10</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> next = padovan[i-<span class="number">3</span>] + padovan[i-<span class="number">2</span>];</span><br><span class="line">        padovan.push(next);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">"P(1..10) = &#123;:?&#125;"</span>, padovan);</span><br><span class="line">&#125;                                   <span class="comment">// dropped here</span></span><br></pre></td></tr></table></figure><p><img src="/images/15657154271374.jpg" alt="vector memory model"></p></li></ul></li></ul>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;记录Rust入门失败笔记.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;bool&lt;/strong&gt;&lt;br&gt;  会占一个字节, 从而允许指针指向这个字节的地址.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;numeric&lt;/strong&gt;&lt;ul&gt;
-&lt;li&gt;不允许隐式
+        &lt;p&gt;半个月前看完了《The Rust Programming Language》, 但是仍然感觉自己对Rust还是一知半解, 入门失败.&lt;br&gt;随后开始看《Programming rust》影印版, 感觉这本书讲得更好, 作者用了很多图来解释, 这本书也是一本巨厚的参考书类型,
       
     
     </summary>

@@ -18,20 +18,20 @@
   
   
   <title>Rust入门失败之基础数据类型 | 不插电码农</title>
-  <meta name="description" content="记录Rust入门失败笔记.  bool  会占一个字节, 从而允许指针指向这个字节的地址.   numeric 不允许隐式转换 如果需要调用类型的方法, 在有二意的情况下必须显式转换, 例如加后缀: (2.0_f64).sqrt() bool, char, enum 可以转换为任意整型integer, 但反向转换不行, 唯一例外是u8转char     char 大小32bit UNICODE编码">
+  <meta name="description" content="半个月前看完了《The Rust Programming Language》, 但是仍然感觉自己对Rust还是一知半解, 入门失败.随后开始看《Programming rust》影印版, 感觉这本书讲得更好, 作者用了很多图来解释, 这本书也是一本巨厚的参考书类型, 目前啃了一半. so, 把之前的一些读书笔记记下来, 一方面把书读薄, 一方面算是Rust的入门失败笔记.  bool  会占一个字">
 <meta name="keywords" content="Rust,Rust教程,Rust笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Rust入门失败之基础数据类型">
 <meta property="og:url" content="https://unpluggedcoder.me/2019/08/14/Rust入门失败之基础数据类型/index.html">
 <meta property="og:site_name" content="不插电码农">
-<meta property="og:description" content="记录Rust入门失败笔记.  bool  会占一个字节, 从而允许指针指向这个字节的地址.   numeric 不允许隐式转换 如果需要调用类型的方法, 在有二意的情况下必须显式转换, 例如加后缀: (2.0_f64).sqrt() bool, char, enum 可以转换为任意整型integer, 但反向转换不行, 唯一例外是u8转char     char 大小32bit UNICODE编码">
+<meta property="og:description" content="半个月前看完了《The Rust Programming Language》, 但是仍然感觉自己对Rust还是一知半解, 入门失败.随后开始看《Programming rust》影印版, 感觉这本书讲得更好, 作者用了很多图来解释, 这本书也是一本巨厚的参考书类型, 目前啃了一半. so, 把之前的一些读书笔记记下来, 一方面把书读薄, 一方面算是Rust的入门失败笔记.  bool  会占一个字">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://unpluggedcoder.me/images/15657152495840.jpg">
 <meta property="og:image" content="https://unpluggedcoder.me/images/15657154271374.jpg">
-<meta property="og:updated_time" content="2019-08-13T16:59:36.785Z">
+<meta property="og:updated_time" content="2019-08-13T17:37:33.451Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rust入门失败之基础数据类型">
-<meta name="twitter:description" content="记录Rust入门失败笔记.  bool  会占一个字节, 从而允许指针指向这个字节的地址.   numeric 不允许隐式转换 如果需要调用类型的方法, 在有二意的情况下必须显式转换, 例如加后缀: (2.0_f64).sqrt() bool, char, enum 可以转换为任意整型integer, 但反向转换不行, 唯一例外是u8转char     char 大小32bit UNICODE编码">
+<meta name="twitter:description" content="半个月前看完了《The Rust Programming Language》, 但是仍然感觉自己对Rust还是一知半解, 入门失败.随后开始看《Programming rust》影印版, 感觉这本书讲得更好, 作者用了很多图来解释, 这本书也是一本巨厚的参考书类型, 目前啃了一半. so, 把之前的一些读书笔记记下来, 一方面把书读薄, 一方面算是Rust的入门失败笔记.  bool  会占一个字">
 <meta name="twitter:image" content="https://unpluggedcoder.me/images/15657152495840.jpg">
   <!-- Canonical links -->
   <link rel="canonical" href="https://unpluggedcoder.me/2019/08/14/Rust入门失败之基础数据类型/index.html">
@@ -367,7 +367,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/14/Rust入门失败之基础数据类型/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 278(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 384(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -377,7 +377,7 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>记录Rust入门失败笔记.</p>
+        <p>半个月前看完了《The Rust Programming Language》, 但是仍然感觉自己对Rust还是一知半解, 入门失败.<br>随后开始看《Programming rust》影印版, 感觉这本书讲得更好, 作者用了很多图来解释, 这本书也是一本巨厚的参考书类型, 目前啃了一半. so, 把之前的一些读书笔记记下来, 一方面把书读薄, 一方面算是Rust的入门失败笔记.</p>
 <ul>
 <li><strong>bool</strong><br>  会占一个字节, 从而允许指针指向这个字节的地址.</li>
 </ul>
