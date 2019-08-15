@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://unpluggedcoder.me/images/15658023685576.png">
 <meta property="og:image" content="https://unpluggedcoder.me/images/15658026364390.png">
 <meta property="og:image" content="https://unpluggedcoder.me/images/15658026612243.png">
-<meta property="og:updated_time" content="2019-08-14T17:17:38.072Z">
+<meta property="og:updated_time" content="2019-08-15T16:26:33.288Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rust入门失败之Ownership">
 <meta name="twitter:description" content="Rule No.1Ownership背后全都围绕这下面这一唯一规则:  Every value has a single owner that determines its lifetime. 每个值只有一个拥有者可以决定它的生命周期. 也就是说: Owner销毁(dropped), 值也销毁. 整个程序的数据像一个Ownership Tree🌲  Copy &amp;amp; Move非Copy ty">
@@ -370,7 +370,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/15/Rust入门失败之Ownership/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 659(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 679(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 2(分)</span>
@@ -399,7 +399,7 @@
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> str1 = <span class="string">"somnambulance"</span>.to_string();</span><br><span class="line"><span class="keyword">let</span> str2 = str1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> num1: <span class="built_in">i32</span> = <span class="number">36</span>;</span><br><span class="line"><span class="keyword">let</span> num2 = num1;</span><br></pre></td></tr></table></figure>
 <p><img src="/images/15658022857965.png" alt="Move Copy 1"></p>
 <ul>
-<li><p>不允许实现自定义Copy trait</p>
+<li><p>对于有指向heap数据的数据类型(包括自定义类型)不允许实现自定义Copy trait.</p>
 </li>
 <li><p>如果要允许移除(Move)一些被索引的内容, 例如 <code>Vec&lt;String&gt;</code> 可以用<code>Option&lt;T&gt;,</code> 被Move后, 原先的值为None.</p>
 </li>
