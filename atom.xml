@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://unpluggedcoder.me/"/>
-  <updated>2019-08-15T16:26:33.288Z</updated>
+  <updated>2019-08-19T16:10:22.142Z</updated>
   <id>https://unpluggedcoder.me/</id>
   
   <author>
@@ -15,6 +15,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Rust入门失败之Reference</title>
+    <link href="https://unpluggedcoder.me/2019/08/19/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BReference/"/>
+    <id>https://unpluggedcoder.me/2019/08/19/Rust入门失败之Reference/</id>
+    <published>2019-08-19T15:23:30.000Z</published>
+    <updated>2019-08-19T16:10:22.142Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li>Reference实际只是一个地址</li><li>引用不影响所引用的生命周期</li><li>References must never outlive their referents. 引用生命周期不得超过所引用值.</li></ul><h2 id="Shared-Reference"><a href="#Shared-Reference" class="headerlink" title="Shared Reference"></a>Shared Reference</h2><ul><li>可以有多个共享引用</li><li>一旦有<em>shared reference</em>, 被引用的Owner变成<strong>只读</strong>, <strong>不能修改和move</strong>.</li><li><em>shared reference</em>可以 <strong>Copy</strong></li></ul><h2 id="Mutable-Reference"><a href="#Mutable-Reference" class="headerlink" title="Mutable Reference"></a>Mutable Reference</h2><ul><li>一旦有可变引用, 除了可变引用衍生出的引用, 不能有其它任何形式的引用访问和修改, 直到可变引用销毁</li><li><em>mutable reference**</em>不可 Copy**</li></ul><h2 id="引用规则判断标准"><a href="#引用规则判断标准" class="headerlink" title="引用规则判断标准"></a>引用规则判断标准</h2><ul><li>引用类型变量不得超过Owner生存期——引用变量生命周期的上限</li><li>存储了引用的变量其引用的Owner生命周期必须至少涵盖到变量的生命周期——Owner生命周期的下限</li></ul><p>上限至少包含下限才符合规则! 例如:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> r;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> x = <span class="number">1</span>;</span><br><span class="line">        r = &amp;x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">assert_eq!</span>(*r, <span class="number">1</span>);  <span class="comment">// bad: reads memory `x` used to occupy</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><code>x</code>的生命周期如下:</p><p><img src="/images/image-20190819233837846.png" alt="Reference 1"></p><p>而变量 <code>r</code>的生命周期如下:</p><p><img src="/images/image-20190819233837866.png" alt="Reference 2"></p><p>上限未包含下限, 因此不满足.</p><p><img src="/images/image-20190819233837856.png" alt="Reference 3"></p><p>把<code>r</code>放入内部, OK</p><p><img src="/images/image-20190819233837876.png" alt="Screen Shot 2019-08-19 at 23.53.48"></p><h1 id="Static引用"><a href="#Static引用" class="headerlink" title="Static引用"></a>Static引用</h1><ul><li><p>所有静态的数据都必须被初始化</p></li><li><p>可变的静态引用(Mutable statics)默认都非线程安全, 只能在<code>unsafe block</code>内访问可变的静态引用</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">mut</span> STASH: &amp;<span class="built_in">i32</span> = &amp;<span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">f</span></span>(p: &amp;<span class="symbol">'static</span> <span class="built_in">i32</span>) &#123;</span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        STASH = p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul><h1 id="包含引用的复合类型"><a href="#包含引用的复合类型" class="headerlink" title="包含引用的复合类型"></a>包含引用的复合类型</h1><ul><li><p>包含引用的复合类型(如<code>struct</code>)必须声明其生命周期</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">T</span></span>&lt;<span class="symbol">'a</span>&gt; &#123;</span><br><span class="line">    s: S&lt;<span class="symbol">'a</span>&gt;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// or</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">T</span></span> &#123;</span><br><span class="line">    s: S&lt;<span class="symbol">'static</span>&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul><ul><li><code>self</code>的方法如果返回引用, 默认与<code>self</code>是相同的生命周期</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;ul&gt;
+&lt;li&gt;Reference实际只是一个地址&lt;/li&gt;
+&lt;li&gt;引用不影响所引用的生命周期&lt;/li&gt;
+&lt;li&gt;References must never outlive their referents. 引用生命周期不得超过所引用值.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=
+      
+    
+    </summary>
+    
+      <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+      <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+      <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+      <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+      <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="Ownership" scheme="https://unpluggedcoder.me/tags/Ownership/"/>
+    
+      <category term="Reference" scheme="https://unpluggedcoder.me/tags/Reference/"/>
+    
+      <category term="Shared Reference" scheme="https://unpluggedcoder.me/tags/Shared-Reference/"/>
+    
+  </entry>
   
   <entry>
     <title>Rust入门失败之Ownership</title>
@@ -572,34 +614,6 @@
       <category term="Python" scheme="https://unpluggedcoder.me/tags/Python/"/>
     
       <category term="爬虫" scheme="https://unpluggedcoder.me/tags/%E7%88%AC%E8%99%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>在Linux(CentOS)上开启小度WIFI无线AP模式</title>
-    <link href="https://unpluggedcoder.me/2015/01/29/%E5%9C%A8Linux(CentOS)%E4%B8%8A%E5%BC%80%E5%90%AF%E5%B0%8F%E5%BA%A6WIFI%E6%97%A0%E7%BA%BFAP%E6%A8%A1%E5%BC%8F/"/>
-    <id>https://unpluggedcoder.me/2015/01/29/在Linux(CentOS)上开启小度WIFI无线AP模式/</id>
-    <published>2015-01-29T03:31:35.000Z</published>
-    <updated>2019-03-28T16:51:08.770Z</updated>
-    
-    <content type="html"><![CDATA[<p>从这个博客<a href="https://evilbinary.org/blog/article/6/" target="_blank" rel="noopener">https://evilbinary.org/blog/article/6/</a></p><p>下载DPA_MT7601U_LinuxAP_ANDROID_20121211这个文件</p><p>解压后修改几个文件:</p><ol><li>目录下的Makefile</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux 2.6</span></span><br><span class="line"><span class="comment">#LINUX_SRC = /lib/modules/$(shell uname -r)/build 这里改成自己的路径</span></span><br><span class="line">LINUX_SRC = /lib/modules/3.10.0-123.4.2.el7.x86_64/build</span><br><span class="line"><span class="comment"># Linux 2.4 Change to your local setting</span></span><br><span class="line"><span class="comment">#LINUX_SRC = /usr/src/linux-2.4</span></span><br><span class="line">LINUX_SRC_MODULE = /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/</span><br><span class="line">CROSS_COMPILE =</span><br><span class="line">endif</span><br></pre></td></tr></table></figure><ol start="2"><li>os/linux/rt_linux.c这个文件里918行的宏要改成(2.6以上内核):</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#if LINUX_VERSION_CODE &amp;lt; KERNEL_VERSION(2,6,29)</span></span><br><span class="line">pOSFSInfo-&amp;gt;fsuid = current-&amp;gt;fsuid;</span><br><span class="line">pOSFSInfo-&amp;gt;fsgid = current-&amp;gt;fsgid;</span><br><span class="line">current-&amp;gt;fsuid = current-&amp;gt;fsgid = 0;</span><br><span class="line">//<span class="comment">#else 注释这里</span></span><br><span class="line">// pOSFSInfo-&amp;gt;fsuid = current_fsuid() ;</span><br><span class="line">// pOSFSInfo-&amp;gt;fsgid = current_fsgid() ;</span><br><span class="line"><span class="comment">#endif</span></span><br></pre></td></tr></table></figure><p>然后make, make install, 忽略lzma的压缩命令未找到</p><p>modprobe mt7601Uap</p><p>然后<code>lsmod | grep mt7601</code>可以看到mt7601Uap代表成功, 然后重启</p><p>接下来参考这里</p><p><a href="https://blog.csdn.net/sumang_87/article/details/38168877" target="_blank" rel="noopener">https://blog.csdn.net/sumang_87/article/details/38168877</a></p><ol><li><p><code>yum install dhcp -y</code></p></li><li><p>编辑 <code>sudo vim /etc/dhcp/dhcpd.conf</code></p></li></ol><p>加上了下面一段。。(搜索 This is ；另外注意DNS（domain-name-servers），你们自己选择合适你们的)</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">subnet 192.168.208.0 netmask 255.255.255.0 &#123;</span><br><span class="line"></span><br><span class="line">    range 192.168.208.10 192.168.208.20;</span><br><span class="line"></span><br><span class="line">    option routers 192.168.208.1;</span><br><span class="line"></span><br><span class="line">    option domain-name-servers 114.114.114.114;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ol start="3"><li>把下面的保存成StartupWIFI.sh, 开机启动即可….</li></ol><p>我的小度WIFI是ra0, 以太网是ens33, 对号入座修改成自己的, 内网IP要和上面的dhcpd.conf一致</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ifconfig ra0 up</span><br><span class="line">ifconfig ra0 192.168.208.1</span><br><span class="line"><span class="built_in">echo</span> 1 | sudo tee /proc/sys/net/ipv4/ip_forward</span><br><span class="line">iptables -t filter -F</span><br><span class="line">iptables -t nat -F</span><br><span class="line">iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE</span><br><span class="line">dhcpd ra0</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;从这个博客&lt;a href=&quot;https://evilbinary.org/blog/article/6/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://evilbinary.org/blog/article/6/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;下载
-      
-    
-    </summary>
-    
-      <category term="Unix/Linux" scheme="https://unpluggedcoder.me/categories/Unix-Linux/"/>
-    
-    
-      <category term="Linux" scheme="https://unpluggedcoder.me/tags/Linux/"/>
-    
-      <category term="小度WIFI" scheme="https://unpluggedcoder.me/tags/%E5%B0%8F%E5%BA%A6WIFI/"/>
     
   </entry>
   
