@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>Rust入门失败之Error Handling | 不插电码农</title>
+  <meta name="description" content="Rust里的错误处理主要分两种: Panic 和 Result 💀Panic 不像C++的未定义操作, painc时的操作顺序: 打印错误信息, 如果定义了RUST_BACKSTRACE=1, 还将打印堆栈; 栈回溯, 按照堆栈顺序销毁资源, 所有类型(含自定义类型)的drop方法被调用; 线程退出, Panic是线程级, 如果主线程崩了, 整个进程结束, 否则其它线程还会继续.   可以用st">
+<meta name="keywords" content="Rust,Rust教程,Rust笔记,Error Handling,Result,painc,Option">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust入门失败之Error Handling">
+<meta property="og:url" content="https://unpluggedcoder.me/2019/08/24/Rust入门失败之Error Handling/index.html">
+<meta property="og:site_name" content="不插电码农">
+<meta property="og:description" content="Rust里的错误处理主要分两种: Panic 和 Result 💀Panic 不像C++的未定义操作, painc时的操作顺序: 打印错误信息, 如果定义了RUST_BACKSTRACE=1, 还将打印堆栈; 栈回溯, 按照堆栈顺序销毁资源, 所有类型(含自定义类型)的drop方法被调用; 线程退出, Panic是线程级, 如果主线程崩了, 整个进程结束, 否则其它线程还会继续.   可以用st">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-24T13:00:57.841Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust入门失败之Error Handling">
+<meta name="twitter:description" content="Rust里的错误处理主要分两种: Panic 和 Result 💀Panic 不像C++的未定义操作, painc时的操作顺序: 打印错误信息, 如果定义了RUST_BACKSTRACE=1, 还将打印堆栈; 栈回溯, 按照堆栈顺序销毁资源, 所有类型(含自定义类型)的drop方法被调用; 线程退出, Panic是线程级, 如果主线程崩了, 整个进程结束, 否则其它线程还会继续.   可以用st">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://unpluggedcoder.me/2019/08/24/Rust入门失败之Error Handling/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="不插电码农" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitment@0.0.3/style/default.min.css">
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+</head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/unpluggedcoder" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">不插电码农</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">A coder, love sketch and drumming.</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Inside the GreatWall</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/waterloosunset" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://gitlab.com/unpluggedcoder" target="_blank" title="Gitlab" data-toggle="tooltip" data-placement="top"><i class="icon icon-gitlab"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>又换了新的hexo主题...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AWS/">AWS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/杂项/">杂项</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/DrumCover/">DrumCover</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Rust/">Rust</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Rust/入门失败/">入门失败</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Unix-Linux/">Unix/Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Windows/">Windows</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据相关/">数据相关</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂项/">杂项</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/涂鸦/">涂鸦</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/读书/">读书</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ATL/" style="font-size: 13px;">ATL</a> <a href="/tags/AWS/" style="font-size: 13px;">AWS</a> <a href="/tags/Aliyun/" style="font-size: 13px;">Aliyun</a> <a href="/tags/Arc/" style="font-size: 13px;">Arc</a> <a href="/tags/BT-Sync/" style="font-size: 13px;">BT Sync</a> <a href="/tags/Box/" style="font-size: 13px;">Box</a> <a href="/tags/C/" style="font-size: 13.29px;">C#</a> <a href="/tags/C-11/" style="font-size: 13.71px;">C++11</a> <a href="/tags/C-C/" style="font-size: 14px;">C/C++</a> <a href="/tags/Celery/" style="font-size: 13px;">Celery</a> <a href="/tags/Data-Visualization/" style="font-size: 13px;">Data Visualization</a> <a href="/tags/DataPipeline/" style="font-size: 13px;">DataPipeline</a> <a href="/tags/Distribution-Lock/" style="font-size: 13px;">Distribution Lock</a> <a href="/tags/Django/" style="font-size: 13.14px;">Django</a> <a href="/tags/Django-Rest-Framework/" style="font-size: 13px;">Django Rest Framework</a> <a href="/tags/Drum/" style="font-size: 13px;">Drum</a> <a href="/tags/Error-Handling/" style="font-size: 13px;">Error Handling</a> <a href="/tags/GCC/" style="font-size: 13.43px;">GCC</a> <a href="/tags/Linux/" style="font-size: 13.29px;">Linux</a> <a href="/tags/MVVM/" style="font-size: 13px;">MVVM</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/ModeAnalytics/" style="font-size: 13px;">ModeAnalytics</a> <a href="/tags/MySQLdb/" style="font-size: 13px;">MySQLdb</a> <a href="/tags/Option/" style="font-size: 13px;">Option</a> <a href="/tags/Ownership/" style="font-size: 13.14px;">Ownership</a> <a href="/tags/Poco/" style="font-size: 13.14px;">Poco</a> <a href="/tags/Poco-C/" style="font-size: 13.14px;">Poco C++</a> <a href="/tags/Python/" style="font-size: 13.86px;">Python</a> <a href="/tags/RDS/" style="font-size: 13.14px;">RDS</a> <a href="/tags/Rc/" style="font-size: 13px;">Rc</a> <a href="/tags/RedShift/" style="font-size: 13px;">RedShift</a> <a href="/tags/Redis/" style="font-size: 13px;">Redis</a> <a href="/tags/Reference/" style="font-size: 13px;">Reference</a> <a href="/tags/Resilio-Sync/" style="font-size: 13px;">Resilio Sync</a> <a href="/tags/Result/" style="font-size: 13px;">Result</a> <a href="/tags/Rust/" style="font-size: 13.43px;">Rust</a> <a href="/tags/Rust教程/" style="font-size: 13.43px;">Rust教程</a> <a href="/tags/Rust笔记/" style="font-size: 13.43px;">Rust笔记</a> <a href="/tags/SQL/" style="font-size: 13px;">SQL</a> <a href="/tags/SSH/" style="font-size: 13px;">SSH</a> <a href="/tags/Shared-Reference/" style="font-size: 13px;">Shared Reference</a> <a href="/tags/SmartPointer/" style="font-size: 13px;">SmartPointer</a> <a href="/tags/Unix-Linux/" style="font-size: 13px;">Unix/Linux</a> <a href="/tags/WPF/" style="font-size: 13px;">WPF</a> <a href="/tags/Windows/" style="font-size: 13.29px;">Windows</a> <a href="/tags/asynchronous/" style="font-size: 13px;">asynchronous</a> <a href="/tags/auto-ptr/" style="font-size: 13px;">auto_ptr</a> <a href="/tags/c/" style="font-size: 13px;">c#</a> <a href="/tags/exception/" style="font-size: 13px;">exception</a> <a href="/tags/jabberd2/" style="font-size: 13.71px;">jabberd2</a> <a href="/tags/logging/" style="font-size: 13px;">logging</a> <a href="/tags/painc/" style="font-size: 13px;">painc</a> <a href="/tags/pip/" style="font-size: 13px;">pip</a> <a href="/tags/quota/" style="font-size: 13px;">quota</a> <a href="/tags/shared-ptr/" style="font-size: 13px;">shared_ptr</a> <a href="/tags/unique-ptr/" style="font-size: 13px;">unique_ptr</a> <a href="/tags/weak-ptr/" style="font-size: 13px;">weak_ptr</a> <a href="/tags/xmpp/" style="font-size: 13.71px;">xmpp</a> <a href="/tags/事件/" style="font-size: 13px;">事件</a> <a href="/tags/低智商社会/" style="font-size: 13px;">低智商社会</a> <a href="/tags/分布式锁/" style="font-size: 13px;">分布式锁</a> <a href="/tags/委托/" style="font-size: 13px;">委托</a> <a href="/tags/富人思维/" style="font-size: 13px;">富人思维</a> <a href="/tags/小度WIFI/" style="font-size: 13px;">小度WIFI</a> <a href="/tags/并发/" style="font-size: 13px;">并发</a> <a href="/tags/性能/" style="font-size: 13px;">性能</a> <a href="/tags/爬虫/" style="font-size: 13px;">爬虫</a> <a href="/tags/素描/" style="font-size: 13.57px;">素描</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Rust/">Rust</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/Rust/入门失败/">入门失败</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/08/24/Rust入门失败之Error Handling/" class="title">Rust入门失败之Error Handling</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-08-24T12:23:30.000Z" itemprop="datePublished">2019-08-24</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Rust/">Rust</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/Rust/入门失败/">入门失败</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/08/19/Rust入门失败之Reference/" class="title">Rust入门失败之Reference</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-08-19T15:23:30.000Z" itemprop="datePublished">2019-08-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Rust/">Rust</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/Rust/入门失败/">入门失败</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/08/15/Rust入门失败之Ownership/" class="title">Rust入门失败之Ownership</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-08-14T16:55:30.000Z" itemprop="datePublished">2019-08-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Rust/">Rust</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/Rust/入门失败/">入门失败</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/08/14/Rust入门失败之基础数据类型/" class="title">Rust入门失败之基础数据类型</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-08-13T16:43:30.000Z" itemprop="datePublished">2019-08-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/杂项/">杂项</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/07/30/公众号/" class="title">公众号</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-07-30T15:43:30.000Z" itemprop="datePublished">2019-07-30</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Rust入门失败之Error Handling" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Rust入门失败之Error Handling
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/08/24/Rust入门失败之Error Handling/" class="article-date">
+	  <time datetime="2019-08-24T12:23:30.000Z" itemprop="datePublished">2019-08-24</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Rust/">Rust</a>►<a class="article-category-link" href="/categories/Rust/入门失败/">入门失败</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/Error-Handling/">Error Handling</a>, <a class="article-tag-link" href="/tags/Option/">Option</a>, <a class="article-tag-link" href="/tags/Result/">Result</a>, <a class="article-tag-link" href="/tags/Rust/">Rust</a>, <a class="article-tag-link" href="/tags/Rust教程/">Rust教程</a>, <a class="article-tag-link" href="/tags/Rust笔记/">Rust笔记</a>, <a class="article-tag-link" href="/tags/painc/">painc</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/24/Rust入门失败之Error Handling/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 608(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 2(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>Rust里的错误处理主要分两种: <code>Panic</code> 和 <code>Result</code></p>
+<h1 id="💀Panic"><a href="#💀Panic" class="headerlink" title="💀Panic"></a>💀Panic</h1><ul>
+<li>不像C++的未定义操作, <code>painc</code>时的操作顺序:<ul>
+<li>打印错误信息, 如果定义了<code>RUST_BACKSTRACE=1</code>, 还将打印堆栈;</li>
+<li>栈回溯, 按照堆栈顺序销毁资源, 所有类型(含自定义类型)的<code>drop</code>方法被调用;</li>
+<li>线程退出, <code>Panic</code>是线程级, 如果主线程崩了, 整个进程结束, 否则其它线程还会继续.</li>
+</ul>
+</li>
+<li>可以用<code>std::panic::catch_unwind()</code>捕获<code>panic</code>时的<code>stack unwinding</code>, 这也是Rust test的做法.</li>
+<li>当C/C++等其它语言调用Rust代码时可以用<code>std::panic::catch_unwind()</code>捕获, 因为unwinding 非Rust code 的行为是未定义的.</li>
+<li><code>std::panic::catch_unwind()</code>只能用于恢复堆栈, 不要尝试着继续运行.</li>
+<li>如果清理过程中<code>drop</code>方法再次panic, 则Rust不会再尝试恢复堆栈unwind stack, 直接<code>abort</code>.</li>
+</ul>
+<h1 id="⚖️Result-lt-T-E-gt"><a href="#⚖️Result-lt-T-E-gt" class="headerlink" title="⚖️Result&lt;T,E&gt;"></a>⚖️Result&lt;T,E&gt;</h1><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">enum</span> <span class="title">Result</span></span>&lt;T, E&gt; &#123;</span><br><span class="line">    <span class="comment">/// Contains the success value</span></span><br><span class="line">    <span class="meta">#[stable(feature = <span class="meta-string">"rust1"</span>, since = <span class="meta-string">"1.0.0"</span>)]</span></span><br><span class="line">    <span class="literal">Ok</span>(<span class="meta">#[stable(feature = <span class="meta-string">"rust1"</span>, since = <span class="meta-string">"1.0.0"</span>)]</span> T),</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// Contains the error value</span></span><br><span class="line">    <span class="meta">#[stable(feature = <span class="meta-string">"rust1"</span>, since = <span class="meta-string">"1.0.0"</span>)]</span></span><br><span class="line">    <span class="literal">Err</span>(<span class="meta">#[stable(feature = <span class="meta-string">"rust1"</span>, since = <span class="meta-string">"1.0.0"</span>)]</span> E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>T, E 分别定义Ok和Err包含的类型：</p>
+<ul>
+<li>Ok(T)</li>
+<li>Err(E)</li>
+</ul>
+<ul>
+<li><p>Result有两个方法: <code>.as_ref()</code>和 <code>.as_mut()</code>分别把<code>Result&lt;T, E&gt;</code>转为 <code>Result&lt;&amp;T, &amp;E&gt;</code>和 <code>Result&lt;&amp;mut T, &amp;mut E&gt;</code>从而避免销毁它或者move.</p>
+</li>
+<li><p><code>fn remove_file(path: &amp;Path) → Result&lt;()&gt;</code>, 这里的Result是别名(aliases), 需要看对应的模块的public Result定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pub type Result&lt;T&gt; = result::Result&lt;T, Error&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过<code>println!(&quot;{:?}&quot;, err);</code>可以查看到更多的技术性错误信息;</p>
+<ul>
+<li><code>err.description()</code>以<code>&amp;str</code>方式返回错误信息;</li>
+<li><code>err.cause()</code>返回<code>Option&lt;&amp;Error&gt;</code>: 内部错误详细信息.</li>
+</ul>
+</li>
+<li><p>用 <code>?</code>向上抛出Err, 只能用于返回<code>Result</code>的函数</p>
+</li>
+<li><p><code>errorchain</code>crate 可以用于定义error type, 方便 <code>?</code>抛出不同类型Err</p>
+</li>
+</ul>
+<h1 id="Custom-Error-Type"><a href="#Custom-Error-Type" class="headerlink" title="Custom Error Type"></a>Custom Error Type</h1><ul>
+<li><p>通常直接定义错误信息结构体, 然后用<code>Err()</code>抛出就够了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#[derive(Debug, Clone)]</span><br><span class="line">pub struct JsonError &#123;</span><br><span class="line">  pub message: String,</span><br><span class="line">  pub line: usize,</span><br><span class="line">  pub column: usize,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">return Err(JsonError &#123;...&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>如果希望和标准库的错误类型表现一致, 还需要定义<code>fmt::Display</code>和<code>Error</code>的trait.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">use std;</span><br><span class="line">use std::fmt;</span><br><span class="line"></span><br><span class="line">// Errors should be printable</span><br><span class="line">imple fmt::Display for JsonError &#123;</span><br><span class="line">	fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; Result&lt;(), fmt::Error&gt; &#123;</span><br><span class="line">		write!(f, &quot;&#123;&#125; (&#123;&#125;:&#123;&#125;)&quot;, self.message, self.line, self.column);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Errors should implement the std::error::Error trait.</span><br><span class="line">impl std::error::Error for JsonError &#123;</span><br><span class="line">	fn description(&amp;self) -&gt; &amp;str &#123;</span><br><span class="line">		&amp;self.message</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://unpluggedcoder.me/2019/08/24/Rust入门失败之Error Handling/" title="Rust入门失败之Error Handling" target="_blank" rel="external">https://unpluggedcoder.me/2019/08/24/Rust入门失败之Error Handling/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/unpluggedcoder" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/unpluggedcoder" target="_blank"><span class="text-dark">不插电码农</span><small class="ml-1x">A coder, love sketch and drumming.</small></a></h3>
+        <div>But his has no time for sketch and drum.</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2019/08/19/Rust入门失败之Reference/" title="Rust入门失败之Reference"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,wechat,twitter"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/waterloosunset" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://gitlab.com/unpluggedcoder" target="_blank" title="Gitlab" data-toggle="tooltip" data-placement="top"><i class="icon icon-gitlab"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 不插电码农
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script src="//cdn.jsdelivr.net/npm/gitment@0.0.3/dist/gitment.browser.min.js"></script>
+<script>
+var gitment = new Gitment({
+  // id默认为当前页面url，如果url后带参数或锚点，gitment要重新初始化
+  // https://github.com/imsun/gitment/issues/55
+  // 解决方案：id:window.location.pathname,或者将id设置为当前页面标题
+  id: 'Rust入门失败之Error Handling', 
+  owner: 'unpluggedcoder', // 可以是你的GitHub用户名，也可以是github id
+  repo: 'git@github.com:unpluggedcoder/unpluggedcoder.github.io.git',
+  oauth: {
+    client_id: '7c159b11bc5c4c72a53c',
+    client_secret: '9bd9cf73dd2eb7499771ddd4846ed2cfbc0b161a',
+  }
+})
+gitment.render('comments')
+</script>
+
+
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+    <script defer type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-99016428-2', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+
+
+</body>
+</html>
