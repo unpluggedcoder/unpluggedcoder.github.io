@@ -27,7 +27,7 @@
 <meta property="og:description" content="Trait Trait有scope的概念, 必须声明可见后才能使用. 这样可以避免名称冲突, 同时也可以灵活地自定义实现Trait  类似C/C++的虚基类接口定义, 但是最明显的差别是:  C/C++的虚基类继承会要求在子类每个实例的内存模型中生成虚函数表, 占用对象内存. 而为一个struct实现一个Trait对struct实例本身没有任何内存开销.   Trait本身并没有固定的大小(只有引">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://unpluggedcoder.me/images/image-20190831011855635.png">
-<meta property="og:updated_time" content="2019-08-30T17:56:36.737Z">
+<meta property="og:updated_time" content="2019-08-30T18:08:30.217Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rust入门失败之Traits&amp;Generics">
 <meta name="twitter:description" content="Trait Trait有scope的概念, 必须声明可见后才能使用. 这样可以避免名称冲突, 同时也可以灵活地自定义实现Trait  类似C/C++的虚基类接口定义, 但是最明显的差别是:  C/C++的虚基类继承会要求在子类每个实例的内存模型中生成虚函数表, 占用对象内存. 而为一个struct实现一个Trait对struct实例本身没有任何内存开销.   Trait本身并没有固定的大小(只有引">
@@ -366,7 +366,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/31/Rust入门失败之Traits&Generics/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 991(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1k(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 4(分)</span>
@@ -429,7 +429,7 @@
 <h1 id="Difference-between-Trait-amp-Generic"><a href="#Difference-between-Trait-amp-Generic" class="headerlink" title="Difference between Trait &amp; Generic"></a>Difference between Trait &amp; Generic</h1><ol>
 <li><p><code>Generic</code>没有运行时开销, 速度更快, 而<code>Trait</code>需要运行时才能知道实际类型(也就是执行时根据Trait Object来查找<code>vtable</code>方法). 如果需要处理大量各种不同类型对象的特性或者对二进制大小有要求, 可以用Trait. 否则建议使用Generic.</p>
 </li>
-<li><p>Not every trait can support trait objects. 并不是所有的Trait都支持<code>Trait Object</code>方式使用. 包含静态方法的Trait, 其方法不能通过<code>Trait Object</code>来访问. 例如下面(仍然以上面静态方法代码为例):</p>
+<li><p>Not every trait can support trait objects. 并不是所有的Trait都支持<code>Trait Object</code>方式使用. 包含静态方法的Trait, 由于<strong>没有self参数</strong>, 在泛型函数中其静态方法不能通过<code>Trait Object</code>来调用. 例如下面(仍然以上面静态方法代码为例):</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Return the set of words in `document` that aren't in `wordlist`.</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">unknown_words</span></span>&lt;S: StringSet&gt;(document: &amp;<span class="built_in">Vec</span>&lt;<span class="built_in">String</span>&gt;, wordlist: &amp;S) -&gt; S &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> unknowns = S::new();  <span class="comment">// 不能通过Trait Object调用new, 只能通过泛型变量S::</span></span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> document &#123;</span><br><span class="line">        <span class="keyword">if</span> !wordlist.contains(word) &#123;</span><br><span class="line">            unknowns.add(word);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    unknowns</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
