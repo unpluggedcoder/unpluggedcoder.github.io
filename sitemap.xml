@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://unpluggedcoder.me/2019/09/26/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BIterator%20Basic/</loc>
+    
+    <lastmod>2019-09-25T16:37:11.299Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://unpluggedcoder.me/2019/09/05/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BClosure/</loc>
     
     <lastmod>2019-09-04T16:59:10.595Z</lastmod>
