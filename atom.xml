@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://unpluggedcoder.me/"/>
-  <updated>2019-11-08T17:03:20.532Z</updated>
+  <updated>2019-11-12T17:01:13.272Z</updated>
   <id>https://unpluggedcoder.me/</id>
   
   <author>
@@ -15,6 +15,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Rust入门失败之String and str</title>
+    <link href="https://unpluggedcoder.me/2019/11/13/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BString%20and%20str/"/>
+    <id>https://unpluggedcoder.me/2019/11/13/Rust入门失败之String and str/</id>
+    <published>2019-11-12T16:20:30.000Z</published>
+    <updated>2019-11-12T17:01:13.272Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li><p>所有<code>String</code>和<code>str</code>类型都保证内部持有正确的<code>UTF-8</code>格式字符串. 所有的safe操作都保证这一点, 即不会引入错误格式的<code>UTF-8</code></p></li><li><p><code>String</code>的内部实现其实就是<code>Vec&lt;u8&gt;</code></p></li><li><p><code>str</code>则是borrow的<code>String</code>引用. <code>&amp;str</code>不能<code>Clone</code>, 因为<code>clone(&amp;T)</code>方法需要一个返回<strong>T</strong>对象, 而<code>str</code>又是<code>unsized</code>的. 可以通过<code>slice.to_owned()</code>获取一份重新分配的拷贝.</p></li><li><p><code>String::new()</code>返回的是一个空的字符串, 还没有分配任何堆上的内存.</p></li><li><p>不能通过单个下标访问slice的某个字符(<code>slice[i]</code>), 因为UTF-8的字符是不定长的. 可以通过<code>chars()</code>方法返回字符的迭代器:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">let</span> parenthesized = <span class="string">"Rust (饂)"</span>;</span><br><span class="line"><span class="built_in">assert_eq!</span>(parenthesized[<span class="number">6</span>..].chars().next(), <span class="literal">Some</span>(<span class="string">'饂'</span>));</span><br></pre></td></tr></table></figure></li><li><p><code>String</code>实现了<code>Add&lt;&amp;str&gt;</code> 和 <code>AddAssign&lt;&amp;str&gt;</code>的Trait, 因此可以很自然地用<code>+</code>拼接字符串. 但是有两点要注意:</p><ul><li><p>左边的操作符不能是<code>&amp;str</code>, 一定要是一个String对象. 因为会<em>consume</em>这个对象, 获取其所有权, 且会重复利用它的buffer, 如果<em>capacity</em>足够大, 就不需要额外再开辟内存.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> string = <span class="string">"partners"</span>.to_string();</span><br><span class="line"><span class="comment">// 不能这样写</span></span><br><span class="line"><span class="keyword">let</span> parenthetical = <span class="string">"("</span> + string + <span class="string">")"</span>;</span><br><span class="line"><span class="comment">// 需要转为String</span></span><br><span class="line"><span class="keyword">let</span> parenthetical = <span class="string">"("</span>.to_string() + string + <span class="string">")"</span>;</span><br></pre></td></tr></table></figure></li><li><p>对右边的操作符只是<em>borrow</em>, 也就意味着它的内容会被拷贝到前者的buffer末尾.</p></li></ul></li><li><p><code>String</code>转成其它类型需要实现<code>std::str::FromStr</code> Trait. 所有的基础类型都实现了这个Trait.</p></li><li><p>其它类型转成<code>String</code>有三种方法:</p><ul><li>实现<code>std::fmt::Display</code> trait. 所有的机器数字类型都实现了这个trait, 可以直接显示. 而像<code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, <code>Arc&lt;T&gt;</code> 这类智能指针类型, 只有<strong>T</strong>实现了Display trait, 这个类型才能Dispaly.</li><li>实现<code>std::str::ToString</code> trait.如果实现了上面的Display trait, 那么Rust自动帮我们实现这个trait.</li><li>实现<code>std::fmt::Dbug</code> trait. 所有标准库可访问的pub 类型都实现了这个方法. 通常如果我们是库的开发者, 对外部开放的类型也都应该实现这个trait, 方便他人打印调试.</li></ul></li></ul><ul><li><p>如果做数据压缩之类的, 需要访问字符串内部字节数据有两种方法:</p><ul><li><p><code>slice.as_bytes()</code>: borrow其内部的<code>Vec</code>, 返回<code>&amp;[u8]</code>. <em>immutable</em>, 且需要注意生命周期.</p></li><li><p><code>string.into_bytes()</code>: 这个成本比较低, 直接consume这个<code>String</code>对象, 把内部的<code>Vec&lt;u8&gt;</code>交出来返回, 没有任何多余的成本.</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pub fn into_bytes(self) -&gt; Vec&lt;u8&gt; &#123;</span><br><span class="line">    self.vec</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul></li><li><p>同样从原始的字节也可以构造<code>String</code>, 有下面几种方法, 但是都要注意错误检查:</p><ul><li><code>std::str::from_utf8(v: &amp;[u8]) -&gt; Result&lt;&amp;str, Utf8Error&gt;</code>: 从这里可以看到, 一是会做错误检查, 如果不是有效的<code>UTF-8</code>格式字节, 则会返回<code>Err</code>; 二是, 返回的<code>&amp;str</code>和<code>&amp;[u8]</code>有同样的生命周期.</li><li><code>String::from_utf8(vec: Vec&lt;u8&gt;) -&gt; Result</code>: 一, 同样做错误检查; 二, 参数直接捕获Vec所有权, 并把它的buffer做为String内部buffer, 省去了开辟, 非常高效;</li></ul></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;ul&gt;
+&lt;li&gt;&lt;p&gt;所有&lt;code&gt;String&lt;/code&gt;和&lt;code&gt;str&lt;/code&gt;类型都保证内部持有正确的&lt;code&gt;UTF-8&lt;/code&gt;格式字符串. 所有的safe操作都保证这一点, 即不会引入错误格式的&lt;code&gt;UTF-8&lt;/code&gt;&lt;/p&gt;
+&lt;/l
+      
+    
+    </summary>
+    
+      <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+      <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+      <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+      <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+      <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="String" scheme="https://unpluggedcoder.me/tags/String/"/>
+    
+      <category term="str" scheme="https://unpluggedcoder.me/tags/str/"/>
+    
+      <category term="slice" scheme="https://unpluggedcoder.me/tags/slice/"/>
+    
+      <category term="FromStr" scheme="https://unpluggedcoder.me/tags/FromStr/"/>
+    
+      <category term="ToString" scheme="https://unpluggedcoder.me/tags/ToString/"/>
+    
+  </entry>
   
   <entry>
     <title>Rust入门失败之Collections</title>
@@ -728,28 +771,6 @@
       <category term="Resilio Sync" scheme="https://unpluggedcoder.me/tags/Resilio-Sync/"/>
     
       <category term="BT Sync" scheme="https://unpluggedcoder.me/tags/BT-Sync/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Migrate to Hexo</title>
-    <link href="https://unpluggedcoder.me/2017/10/29/Migrate-to-Hexo/"/>
-    <id>https://unpluggedcoder.me/2017/10/29/Migrate-to-Hexo/</id>
-    <published>2017-10-29T15:05:33.000Z</published>
-    <updated>2017-10-30T02:46:30.199Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天终于将主页完全的从Wordpress切换到了Hexo, 现在可以用markdown写作了，不用担心格式问题😉。</p><p>之前尝试了包括<code>jekyll</code>和<code>Pelican</code>在内的几个静态博客方案，唯独Hexo能够很好的将我之前旧的Wordpress转换成markdown，虽然也花了不少功夫手动修改旧的文章，但工作量相比其它框架少了很多，加上<a href="https://pages.github.com" target="_blank" rel="noopener">pages.github.com</a>的支持已经很好的满足了我的需求。<br>使用的是<a href="https://github.com/probberechts/cactus-dark" target="_blank" rel="noopener">cactus-dark</a>主题，感谢作者！</p><p>写文章的频率远不如以前了，4月份的时候创建了<a href="https://www.shuide.email" target="_blank" rel="noopener">谁的Email</a>。<br>这个网站其实是参照了<a href="https://www.maildrop.cc" target="_blank" rel="noopener">maildrop.cc</a>的源码用Python+Django重新实现了，简化了垃圾邮件过滤在内的很多功能，但也基本够用，目前除了自己也没有什么用户量，算是一个失败的Side project吧。后续会将这个源码公开到GitHub上，当然了，以我以往的风格，po到GitHub的项目基本就不更新了😂。</p><p>不过自己也很快在酝酿下一个Side project了。由于自己是后端出身，对前端知识非常欠缺, 所以目前也在学习一个前端框架Angular 2+, 不知不觉感觉像全栈了。Anyway, 尽早将个项目带给大家吧。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;今天终于将主页完全的从Wordpress切换到了Hexo, 现在可以用markdown写作了，不用担心格式问题😉。&lt;/p&gt;
-&lt;p&gt;之前尝试了包括&lt;code&gt;jekyll&lt;/code&gt;和&lt;code&gt;Pelican&lt;/code&gt;在内的几个静态博客方案，唯独Hexo能够很好的将
-      
-    
-    </summary>
-    
     
   </entry>
   
