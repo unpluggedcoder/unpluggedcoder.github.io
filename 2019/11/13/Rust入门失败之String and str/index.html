@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="不插电码农">
 <meta property="og:description" content="所有String和str类型都保证内部持有正确的UTF-8格式字符串. 所有的safe操作都保证这一点, 即不会引入错误格式的UTF-8  String的内部实现其实就是Vec&amp;lt;u8&amp;gt;  str则是borrow的String引用. &amp;amp;str不能Clone, 因为clone(&amp;amp;T)方法需要一个返回T对象, 而str又是unsized的. 可以通过slice.to_own">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-12T17:01:13.272Z">
+<meta property="og:updated_time" content="2019-11-12T17:03:18.221Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rust入门失败之String and str">
 <meta name="twitter:description" content="所有String和str类型都保证内部持有正确的UTF-8格式字符串. 所有的safe操作都保证这一点, 即不会引入错误格式的UTF-8  String的内部实现其实就是Vec&amp;lt;u8&amp;gt;  str则是borrow的String引用. &amp;amp;str不能Clone, 因为clone(&amp;amp;T)方法需要一个返回T对象, 而str又是unsized的. 可以通过slice.to_own">
@@ -401,7 +401,7 @@
 <ul>
 <li>实现<code>std::fmt::Display</code> trait. 所有的机器数字类型都实现了这个trait, 可以直接显示. 而像<code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, <code>Arc&lt;T&gt;</code> 这类智能指针类型, 只有<strong>T</strong>实现了Display trait, 这个类型才能Dispaly.</li>
 <li>实现<code>std::str::ToString</code> trait.如果实现了上面的Display trait, 那么Rust自动帮我们实现这个trait.</li>
-<li>实现<code>std::fmt::Dbug</code> trait. 所有标准库可访问的pub 类型都实现了这个方法. 通常如果我们是库的开发者, 对外部开放的类型也都应该实现这个trait, 方便他人打印调试.</li>
+<li>实现<code>std::fmt::Debug</code> trait. 所有标准库可访问的pub 类型都实现了这个方法. 通常如果我们是库的开发者, 对外部开放的类型也都应该实现这个trait, 方便他人打印调试.</li>
 </ul>
 </li>
 </ul>
