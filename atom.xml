@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://unpluggedcoder.me/"/>
-  <updated>2019-11-21T18:08:08.046Z</updated>
+  <updated>2019-12-16T17:02:20.115Z</updated>
   <id>https://unpluggedcoder.me/</id>
   
   <author>
@@ -15,6 +15,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Rust入门失败之Read&amp;Write</title>
+    <link href="https://unpluggedcoder.me/2019/12/11/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BRead&amp;Write/"/>
+    <id>https://unpluggedcoder.me/2019/12/11/Rust入门失败之Read&amp;Write/</id>
+    <published>2019-12-10T17:00:20.000Z</published>
+    <updated>2019-12-16T17:02:20.115Z</updated>
+    
+    <content type="html"><![CDATA[<p>Rust <code>std::io</code>的核心是<code>Read</code>和<code>Write</code>两个trait.</p><h1 id="Readers"><a href="#Readers" class="headerlink" title="Readers"></a>Readers</h1><ul><li><p><code>std::io::Read</code>的所有方法都是<code>&amp;mut self</code>, 也就是必须拥有对象的<em>mut</em> reference.</p></li><li><p><code>read</code>方法, 函数原型:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">read</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, buf: &amp;<span class="keyword">mut</span> [<span class="built_in">u8</span>]) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">usize</span>&gt;</span><br></pre></td></tr></table></figure><ul><li>从对象里读取最长不超过<code>buf.len()</code>长度的字节数据.</li><li>如果返回0, 有两种可能: <ul><li>一是可能到达了EOF(End Of File), 这个对象不会再有任何数据可读;</li><li>二是buf长度为0.</li></ul></li><li>这个函数不能依赖buf中任何原有的数据, 但也不保证函数调用后buf的内容会是什么. 实现时建议正常点, 写入buf就好.</li><li>buf需要提前初始化, 否则<em>undefined behavior</em>.</li></ul></li><li><p>还有其它的一些read函数:</p><ul><li><code>read_to_end</code>: 一直读到EOF为止, 最好不要调用不信任的Reader的这个方法, 比如网络数据.</li><li><code>read_to_string</code>: 读到<code>&amp;mut string</code>参数中, 前提条件要是有效的UTF-8字符, 否则会报错.</li><li><code>read_exact</code>: 读指定长度, 如果数据提前结尾, 那么会报错.</li></ul></li><li><p><code>BufRead</code>是带缓冲区的Reader, 类似fread(fread一次会预读一个<em>blocksize</em>大小的数据块). BufRead也是类似, 它提供了一个read_line函数, 读取一行, 而实际内部调用了read, 可能预读了8k的大小, 足够满足后面几百次的read_line调用请求.</p><p><img src="/images/BufRead.png" alt="Screen Shot 2019-11-28 at 00.55.56"></p></li></ul><ul><li><p>从<code>stdin</code>读取. 在C中, 如果多个线程同时从stdin中读数据会造成未定义的行为. 标准的做法是加锁. Rust也是一样, 唯一的区别是加锁这个动作是Rust API自带提供的.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> stdin = io::stdin();</span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> stdin.lock().lines() &#123;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">"&#123;&#125;"</span>, line);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>从文件读取. <code>File::open</code>默认返回的<code>File</code>对象只实现了<code>Read</code> trait, 不带<code>BufRead</code> trait. 因此需要手动创建一个<code>BufReader</code> struct.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::io::BufReader;</span><br><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f = File::open(<span class="string">"log.txt"</span>)?;</span><br><span class="line"><span class="keyword">let</span> reader = BufReader::new(f);</span><br><span class="line"><span class="comment">// Or with_capacity</span></span><br><span class="line"><span class="comment">// let reader = BufReader::with_capacity(10, f);</span></span><br></pre></td></tr></table></figure></li></ul><h1 id="Writers"><a href="#Writers" class="headerlink" title="Writers"></a>Writers</h1><ul><li>和Read类似, 实现<code>Write</code> trait, 有三个主要的方法: <code>write</code>, <code>write_all</code>, <code>flush</code>.</li><li>同样也有<code>BufWriter</code>, 如果<code>BufWriter</code>对象被drop, 那么缓冲区内所有的数据会被写入底层的writer中. 如果这时候写入有错误的话会被忽略.</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Rust &lt;code&gt;std::io&lt;/code&gt;的核心是&lt;code&gt;Read&lt;/code&gt;和&lt;code&gt;Write&lt;/code&gt;两个trait.&lt;/p&gt;
+&lt;h1 id=&quot;Readers&quot;&gt;&lt;a href=&quot;#Readers&quot; class=&quot;headerlink&quot; titl
+      
+    
+    </summary>
+    
+      <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+      <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+      <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+      <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+      <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="Read" scheme="https://unpluggedcoder.me/tags/Read/"/>
+    
+      <category term="BufRead" scheme="https://unpluggedcoder.me/tags/BufRead/"/>
+    
+      <category term="Write" scheme="https://unpluggedcoder.me/tags/Write/"/>
+    
+      <category term="BufWrite" scheme="https://unpluggedcoder.me/tags/BufWrite/"/>
+    
+  </entry>
   
   <entry>
     <title>2018-2019</title>
@@ -737,37 +777,6 @@
       <category term="Distribution Lock" scheme="https://unpluggedcoder.me/tags/Distribution-Lock/"/>
     
       <category term="Redis" scheme="https://unpluggedcoder.me/tags/Redis/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>asynchronous logging with Python</title>
-    <link href="https://unpluggedcoder.me/2018/05/03/Asynchronous-logging-with-Python/"/>
-    <id>https://unpluggedcoder.me/2018/05/03/Asynchronous-logging-with-Python/</id>
-    <published>2018-05-02T17:17:02.000Z</published>
-    <updated>2019-03-28T16:42:42.733Z</updated>
-    
-    <content type="html"><![CDATA[<p>项目中通常会用Python <code>logging</code>模块做发报警邮件、发日志到<code>logstash</code>等功能，甚至可以发送到slack、telegram这类应用。可能是<code>logging</code>模块太好了，用来做这些notification都足够了。但如果有频繁的log请求或者比较高的响应要求，可能就会有很多时间花在这些网络日志的连接与断开上，因此想想大Python应该有异步日志之类的第三方模块吧。找了半天没有合适的可以满足我这类通用网络日志的模块，遂自己写了个。</p><p>主要用的是<code>threading</code>模块，当然如果觉得不合适可以用<code>Celery</code>。思路很简单，重载<code>logging.Handler</code>来写自己的日志处理。考虑到网络日志可能有如上各种应用，再加上如果需要使用<code>Celery</code>的话handler function需要可序列化，因此传个回调给handler实例，并在<code>emit</code>方法中调用。这个回调里做网络日志的各种操作，这样就可以做到足够的可定制化，话不多说，上代码。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> shared_task</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> asynclog <span class="keyword">import</span> AsyncLogDispatcher</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用Celery</span></span><br><span class="line"><span class="meta">@shared_task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_task</span><span class="params">(msg)</span>:</span></span><br><span class="line">    <span class="comment"># Write log in Network IO</span></span><br><span class="line">    print(msg)</span><br><span class="line"></span><br><span class="line">celery_handler = AsyncLogDispatcher(write_task, use_thread=<span class="literal">False</span>, use_celery=<span class="literal">True</span>)</span><br><span class="line">celery_handler.setLevel(logging.INFO)</span><br><span class="line">logger.addHandler(celery_handler)</span><br><span class="line"></span><br><span class="line">logger.info(<span class="string">'Test Log'</span>)</span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用threading</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_log</span><span class="params">(msg)</span>:</span></span><br><span class="line">    <span class="comment"># Do write stuff, such as write log msg into network.</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    time.sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">logger = logging.getLogger()</span><br><span class="line">logger.setLevel(logging.INFO)</span><br><span class="line">handler = AsyncLogDispatcher(write_log)</span><br><span class="line">handler.setLevel(logging.INFO)</span><br><span class="line">logger.addHandler(handler)</span><br><span class="line"></span><br><span class="line">logger.info(<span class="string">'Test Log'</span>)</span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 结合dictConfig</span></span><br><span class="line">log_cfg = &#123;</span><br><span class="line">    <span class="string">'version'</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">'disable_existing_loggers'</span>: <span class="literal">False</span>,</span><br><span class="line">    <span class="string">'formatters'</span>: &#123;</span><br><span class="line">        <span class="string">'simple'</span>: &#123;</span><br><span class="line">            <span class="string">'format'</span>: <span class="string">'%(asctime)s \n %(levelname)s \n %(message)s'</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">'handlers'</span>: &#123;</span><br><span class="line">        <span class="string">'async_handler'</span>: &#123;</span><br><span class="line">            <span class="string">'level'</span>: <span class="string">'INFO'</span>,</span><br><span class="line">            <span class="string">'formatter'</span>: <span class="string">'simple'</span>,</span><br><span class="line">            <span class="string">'class'</span>: <span class="string">'asynclog.AsyncLogDispatcher'</span>,</span><br><span class="line">            <span class="string">'func'</span>: <span class="string">'write_log'</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">'loggers'</span>: &#123;</span><br><span class="line">        <span class="string">'asynclogger'</span>: &#123;</span><br><span class="line">            <span class="string">'handlers'</span>: [<span class="string">'async_handler'</span>, ],</span><br><span class="line">            <span class="string">'level'</span>: <span class="string">'DEBUG'</span>,</span><br><span class="line">            <span class="string">'propagate'</span>: <span class="literal">False</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">logging.config.dictConfig(log_cfg)</span><br><span class="line">logger = logging.getLogger(<span class="string">'asynclogger'</span>)</span><br><span class="line">logger.info(<span class="string">'Test asynclog'</span>)</span><br></pre></td></tr></table></figure><p>考虑到重载的类实际只是用<code>logging</code>的方法来filter、format日志，真正处理的其实在回调中，所以类名也就不敢叫<code>AsyncLogHandler</code>, 就取名<code>AsyncLogDispatcher</code>。</p><p>该模块已上传至<a href="pypi.org">pypi.org</a>, <code>pip install asynclog</code>即可，代码托管在我的<a href="https://github.com/unpluggedcoder/asynclog" target="_blank" rel="noopener">GitHub</a>, 欢迎交流。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;项目中通常会用Python &lt;code&gt;logging&lt;/code&gt;模块做发报警邮件、发日志到&lt;code&gt;logstash&lt;/code&gt;等功能，甚至可以发送到slack、telegram这类应用。可能是&lt;code&gt;logging&lt;/code&gt;模块太好了，用来做这些notif
-      
-    
-    </summary>
-    
-      <category term="Python" scheme="https://unpluggedcoder.me/categories/Python/"/>
-    
-    
-      <category term="asynchronous" scheme="https://unpluggedcoder.me/tags/asynchronous/"/>
-    
-      <category term="logging" scheme="https://unpluggedcoder.me/tags/logging/"/>
-    
-      <category term="Python" scheme="https://unpluggedcoder.me/tags/Python/"/>
-    
-      <category term="Celery" scheme="https://unpluggedcoder.me/tags/Celery/"/>
     
   </entry>
   
