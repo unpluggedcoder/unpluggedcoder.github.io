@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://unpluggedcoder.me/2019/11/09/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BCollections/</loc>
+    
+    <lastmod>2019-12-24T15:57:38.128Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2019/12/24/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BConcurrency/</loc>
+    
+    <lastmod>2019-12-24T15:57:12.060Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://unpluggedcoder.me/2019/12/11/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BRead&Write/</loc>
     
     <lastmod>2019-12-16T17:02:20.115Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>https://unpluggedcoder.me/2019/11/13/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BString%20and%20str/</loc>
     
     <lastmod>2019-11-12T17:03:18.221Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2019/11/09/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BCollections/</loc>
-    
-    <lastmod>2019-11-08T17:03:20.532Z</lastmod>
     
   </url>
   
