@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://unpluggedcoder.me/"/>
-  <updated>2020-01-20T16:34:55.306Z</updated>
+  <updated>2020-01-28T13:21:49.938Z</updated>
   <id>https://unpluggedcoder.me/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>对冲：不确定时代如何聪明地冒险</title>
+    <link href="https://unpluggedcoder.me/2020/01/28/%E5%AF%B9%E5%86%B2/"/>
+    <id>https://unpluggedcoder.me/2020/01/28/对冲/</id>
+    <published>2020-01-28T13:17:20.000Z</published>
+    <updated>2020-01-28T13:21:49.938Z</updated>
+    
+    <content type="html"><![CDATA[<!-- build time:Tue Jan 28 2020 21:22:25 GMT+0800 (China Standard Time) --><p><img src="/images/s33546804.jpg" alt="img"></p><p><strong>推荐分：3.5</strong></p><p>这书名怎么说呢，字面翻译过来应该是《一位走进妓院的经济学家》😂</p><p>作者在前八章都没有谈“对冲”这个词，一直在讨论风险这个概念。作为一位经济学家，并没有大谈金融领域的对冲操作，而是列举了生活中很多高风险职业管理风险的方法，进而引申到金融领域。比如，书名中的妓院，还有狗仔队、电影行业、种马、魔术等。</p><p>个人感觉对冲并不是整本书的主题。相比于对冲操作本身，感觉作者更希望读者清楚自己的目标, 以及如何处理需要面临的风险。首先，要清楚自己的目标，不要盲目的追求高风险，这和《低风险，高回报》一书的作者一样，对大多数人来说，高风险不是什么好事，有很多低风险的选择。其次，风险有系统风险和特殊风险。前者是整个经济发展的趋势风险，后者可以理解为个体的风险因素。不同风险有不同的管理策略。再次，面对风险，理性很重要。赌徒心态是很大的忌讳。</p><p>这些是我认为作者总结出的面对风险的宏观原则，而作者在书后半部提到的对冲和保险是管理风险的手段。看到么，对冲只是手段之一，相比保险解决下跌风险的手段，对冲缩小了风险影响的同时也减少了收益的上限(切断了风险上下端)。应该合理的利用对冲，把它当成降低风险的工具，而不是冒险追求高回报的手段。</p><p>最后，任何风险管理策略都无法应对所有情况，面对不确定性不仅需要靠经验总结, 心态更重要, 让我想起:“唯一不变的就是变化”😂, 僵化的惯性思维会让自己处于被动的状态. 主动去迎接未知的未知, 面对风险的套路始终不变: 定义目标, 找到完成目标的最佳方式, 同时最小化下跌风险.</p><!-- rebuild by neat -->]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;!-- build time:Tue Jan 28 2020 21:22:25 GMT+0800 (China Standard Time) --&gt;&lt;p&gt;&lt;img src=&quot;/images/s33546804.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;推荐分：
+      
+    
+    </summary>
+    
+      <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+      <category term="经济学" scheme="https://unpluggedcoder.me/tags/%E7%BB%8F%E6%B5%8E%E5%AD%A6/"/>
+    
+      <category term="风险" scheme="https://unpluggedcoder.me/tags/%E9%A3%8E%E9%99%A9/"/>
+    
+  </entry>
   
   <entry>
     <title>爱、金钱和孩子：育儿经济学</title>
@@ -772,30 +799,6 @@
       <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
     
       <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>公众号</title>
-    <link href="https://unpluggedcoder.me/2019/07/30/%E5%85%AC%E4%BC%97%E5%8F%B7/"/>
-    <id>https://unpluggedcoder.me/2019/07/30/公众号/</id>
-    <published>2019-07-30T15:43:30.000Z</published>
-    <updated>2019-08-13T16:48:16.129Z</updated>
-    
-    <content type="html"><![CDATA[<p>之前一直断断续续折腾的公众号今天改名成自己的网络ID：不插电码农。纯粹瞎聊，欢迎扫(qiáng)码(liè)关注。</p><p><img src="/images/qrcode_for_gh_de112ab7fb31_344.jpg" alt="qrcode_for_gh_de112ab7fb31_344"></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;之前一直断断续续折腾的公众号今天改名成自己的网络ID：不插电码农。纯粹瞎聊，欢迎扫(qiáng)码(liè)关注。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/qrcode_for_gh_de112ab7fb31_344.jpg&quot; alt=&quot;qrcode_for_gh
-      
-    
-    </summary>
-    
-      <category term="杂项" scheme="https://unpluggedcoder.me/categories/%E6%9D%82%E9%A1%B9/"/>
-    
     
   </entry>
   
