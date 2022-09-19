@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>不插电码农</title>
+  
+  <subtitle>unpluggedcoder</subtitle>
+  <link href="https://unpluggedcoder.me/atom.xml" rel="self"/>
+  
+  <link href="https://unpluggedcoder.me/"/>
+  <updated>2022-09-15T15:51:05.344Z</updated>
+  <id>https://unpluggedcoder.me/</id>
+  
+  <author>
+    <name>不插电码农</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Improved Differential Flame Graph</title>
+    <link href="https://unpluggedcoder.me/2021/05/22/Improved%20Differential%20Flame%20Graph/"/>
+    <id>https://unpluggedcoder.me/2021/05/22/Improved%20Differential%20Flame%20Graph/</id>
+    <published>2021-05-22T00:29:20.000Z</published>
+    <updated>2022-09-15T15:51:05.344Z</updated>
+    
+    <content type="html"><![CDATA[<p>The <a href="http://www.brendangregg.com/blog/2014-11-09/differential-flame-graphs.html">Differential Flame Graph</a> was introduced by Brendan Gregg in <a href="http://www.brendangregg.com/flamegraphs.html">FlameGraph toolkit</a> , which can let us debug the performance regressions. But it also has its known issue.</p><blockquote><p>“If code paths vanish completely in the second profile, then there’s nothing to color blue.”</p></blockquote><p>For me there is another issue.</p><blockquote><p>The width of frame doesn’t present the REAL difference between two flame graphs.</p></blockquote><p>Let’s see an example🌰.</p><p>Assume we have two folded files like below:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">before.folded</span></span><br><span class="line">_start;main;func1  5</span><br><span class="line">_start;main;func2  10</span><br><span class="line">_start;main;func4;func3  8</span><br><span class="line">_start;main;func4  25</span><br><span class="line">_start;main;func5;func6  15</span><br><span class="line">_start;main;func5  6</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">after.folded</span></span><br><span class="line">_start;main;func2  35</span><br><span class="line">_start;main;func4  0</span><br><span class="line">_start;main;func4;func3  18</span><br><span class="line">_start;main;func5;func6  5</span><br><span class="line">_start;main;func5  20</span><br><span class="line">_start;main;func7  7</span><br></pre></td></tr></table></figure><p>To get a clear view for function changes, we can put it in a table like below:</p><table><thead><tr><th>Name</th><th>Before</th><th>After</th><th>Delta</th></tr></thead><tbody><tr><td>func1</td><td>5</td><td>0</td><td>-5</td></tr><tr><td>func2</td><td>10</td><td>35</td><td>+25</td></tr><tr><td>func3</td><td>8</td><td>18</td><td>+10</td></tr><tr><td>func4</td><td>25</td><td>0</td><td>-25</td></tr><tr><td>func5</td><td>6</td><td>20</td><td>+14</td></tr><tr><td>func6</td><td>15</td><td>5</td><td>-10</td></tr><tr><td>func7</td><td>0</td><td>7</td><td>+7</td></tr><tr><td>Total</td><td>69</td><td>86</td><td>&amp;#124;96&amp;#124;</td></tr></tbody></table><h2 id="Original-Differential-Flame-Graph"><a href="#Original-Differential-Flame-Graph" class="headerlink" title="Original Differential Flame Graph"></a>Original Differential Flame Graph</h2><p><img src="/images/image-20210522103829287.png" alt="image-20210522103829287"></p><ol><li><p><code>func1</code> was totally lost. Although we can use <a href="">Negation</a> to get another differential flame graph.</p></li><li><p><code>func3</code> have +10 delta and <code>func4</code> have down to zero with -25 delta. But they share the <strong>SAME</strong> frame width because the diff-graph is just based on <code>after.folded</code>.</p></li></ol><h2 id="Differential-Flame-Graph-With-Delta-Width"><a href="#Differential-Flame-Graph-With-Delta-Width" class="headerlink" title="Differential Flame Graph With Delta Width"></a>Differential Flame Graph With Delta Width</h2><p>I changed the way calculate diff-frame width which is based on <code>Delta</code> column in the above table, cause it’s REAL differentials. Here is the screenshot.</p><p><img src="/images/image-20210522123753074.png" alt="image-20210522123753074"></p><ul><li><p>The width of frame is based on delta, not any one of samples. So the width percentage is stand for: How much does it effects in all changes. Now, <code>func1</code> shows up and <code>func4</code> has outstanding optimization from the view.</p></li><li><p>The frame color is calculated by its <strong>OWN</strong> delta. So it means: How does the frame’s <strong>SELF</strong> samples(time) changes.</p></li></ul><p><img src="/images/image-20210522124723998.png" alt="image-20210522124723998"></p><ul><li>For the function has not real samples, I put the total delta width on the hint message.</li></ul><h2 id="Try-it"><a href="#Try-it" class="headerlink" title="Try it"></a>Try it</h2><p>You can try the improved differential flame graph at my <a href="https://github.com/unpluggedcoder/inferno">fork</a> from the Rust🦀 version of flame graph toolkit <a href="https://github.com/jonhoo/inferno">inferno</a>(which is 💥20x faster than Perl version).</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;The &lt;a href=&quot;http://www.brendangregg.com/blog/2014-11-09/differential-flame-graphs.html&quot;&gt;Differential Flame Graph&lt;/a&gt; was introduced by B</summary>
+      
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    <category term="Flamegraph" scheme="https://unpluggedcoder.me/categories/Rust/Flamegraph/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>2020-04书单</title>
+    <link href="https://unpluggedcoder.me/2020/05/31/2020-04%E4%B9%A6%E5%8D%95/"/>
+    <id>https://unpluggedcoder.me/2020/05/31/2020-04%E4%B9%A6%E5%8D%95/</id>
+    <published>2020-05-31T13:44:20.000Z</published>
+    <updated>2022-09-15T15:51:05.341Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="数学与泛型编程-高效编程的奥秘"><a href="#数学与泛型编程-高效编程的奥秘" class="headerlink" title="数学与泛型编程-高效编程的奥秘"></a>数学与泛型编程-高效编程的奥秘</h1><p><img src="/images/s29519335.jpg" alt="img"></p><p>这本书虽然不厚, 但是花了很长时间才读完. 本书的作者也是是C++ STL的作者.他本人也是拥有者殿堂级的履历!</p><p>这本书印象最深的是贯穿整本书的数学历史. 对于程序员来说, 里面的数学知识可能不是非常实用,但是前几章里展现的利用数学知识进行代码性能优化的技术令人佩服. 除此之外, 这本书简直可以称作一本数学历史书, 最好奇的是作者提到的人类历史中, 有一千多年的数学空白, 几乎没有什么数学成果.</p><p>如果程序员希望从这本书中了解到什么奇技淫巧, 那可能会失望🤦‍♂️. 看到第十章的标题是“编程的基本概念”, 你以为他终于开始给你讲编程了，结果一上来又给你上了节历史课，真香！到最后, 把贯穿全书的素数结合其应用非对称加密算法来作为收尾, 终于有种感觉这本书没白看. 以后这就是我的数学历史参考书.</p><h1 id="ETF大师投资策略"><a href="#ETF大师投资策略" class="headerlink" title="ETF大师投资策略"></a>ETF大师投资策略</h1><p><img src="/images/s29409979.jpg" alt="img"></p><p>这本书翻译过来的中文名太花哨了, 英文名只是《ETF Investment Strategies》, 译者加上“大师”两个字可能会比较好卖吧. 作者是非常的务实, 介绍了ETF的方方面面, 我并不期望从这类书中能够学到什么投资金手指, 我的目的是就是扫盲. 作者把ETF的各种敞口讲得很清晰, 以及各种交易敞口适合什么样的投资者, 都可以对号入座. 还结合了很多大公司的投资案例. 看完这本书的时候, ETF已经是我定投的重仓产品了, 涵盖了不同的行业. 对于种散户来说, ETF真的是合适不过了.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;数学与泛型编程-高效编程的奥秘&quot;&gt;&lt;a href=&quot;#数学与泛型编程-高效编程的奥秘&quot; class=&quot;headerlink&quot; title=&quot;数学与泛型编程-高效编程的奥秘&quot;&gt;&lt;/a&gt;数学与泛型编程-高效编程的奥秘&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;/images/</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>The Gray Rhino</title>
+    <link href="https://unpluggedcoder.me/2020/04/20/%E7%81%B0%E7%8A%80%E7%89%9B/"/>
+    <id>https://unpluggedcoder.me/2020/04/20/%E7%81%B0%E7%8A%80%E7%89%9B/</id>
+    <published>2020-04-20T15:44:20.000Z</published>
+    <updated>2022-09-15T15:51:05.354Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s29399691.jpg" alt="img"></p><p>《<a href="https://book.douban.com/subject/26961851/">灰犀牛</a>》</p><p><strong>推荐度: 3.5分</strong></p><p>这本书很早就躺在了电子书里, 也是最近疫情, 想起来看的. 今天刚看完. 书的一开始, 完全没搞明白什么是灰犀牛? 和大概率危机有啥关系? 后面才慢慢明白.</p><p>其实, 自己生活中有好多这样的事情在一步步逼近. 怎样才能利用这些大的趋势呢? 就像我在推特上聊到的一点:“设想一下,假如Rust这门语言像现在Java一样大规模使用起来会发生什么变化?用户体验提升,会淘汰掉性能差的产品么? 对企业来说,会节省下非常多的算力,或者说同等资源下企业或硬件可以做更多的计算.下一代编程语言的出现应该是大概率事件,可以说是正向我们冲来的灰犀牛,如何利用这个趋势?”</p><p>像这样的情况很多, 书里提到一点也是让我觉得很有意思: 对水资源保护节约相当重视的不仅有政府和公益组织, 还有大型的食品商业公司, 这些关乎他们的利益和成本. 其实如果从类似这样的角度去看待危机, 那么我相信很多人都愿意展开行动.</p><p>唯一不变的是变化, 来~拥抱个变化😂.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s29399691.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;《&lt;a href=&quot;https://book.douban.com/subject/26961851/&quot;&gt;灰犀牛&lt;/a&gt;》&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐度: 3.5分</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>算法详解（卷1）—算法基础</title>
+    <link href="https://unpluggedcoder.me/2020/04/20/Algorithms%20Illuminated,%20Part%201/"/>
+    <id>https://unpluggedcoder.me/2020/04/20/Algorithms%20Illuminated,%20Part%201/</id>
+    <published>2020-04-20T15:40:20.000Z</published>
+    <updated>2022-09-15T15:51:05.342Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s29970325.jpg" alt="img"></p><p>《<a href="https://book.douban.com/subject/30424415/">算法详解（卷1）—算法基础</a>》</p><p><strong>推荐度: 4.5分</strong></p><p>这本书强烈推荐, 薄薄的一本, 专注在分治算法上. 从整数乘法到排序, 慢慢地引出了分治算法的核心主方法. 穿插在书中的小思考题也很简单. 边学边练, 很容易把主方法掌握. 这才知道分治算法的评估原来有这些门道.</p><p>最后几章从QuickSort开始, 揭示了为什么随机化QuickSort也有<code>O(nlogn)</code>的效率. 再从这里引申到<code>RSelect</code>和<code>DSelect</code>算法上, 感觉非常巧妙, 直观上我以为是完全两个算法题(只能说自己太弱了😂), 没想到QuickSort的思想完全可以使用在后面的两个算法上.</p><p>而<code>DSelect</code>的思路很好, 但仅仅因为需要管理额外的内存空间, 导致了被弃用, 可见算法和实际的性能工程还是有一些取舍的.</p><p>这个系列原名是《 Algorithms Illuminated》, 总共有三卷, 没看的书太多了, 等到刷完了手上的书再考虑后面两卷吧. 买书如山倒, 读书如抽丝是真的.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s29970325.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;《&lt;a href=&quot;https://book.douban.com/subject/30424415/&quot;&gt;算法详解（卷1）—算法基础&lt;/a&gt;》&lt;/p&gt;
+&lt;p&gt;&lt;strong</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="算法" scheme="https://unpluggedcoder.me/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="Algorithm" scheme="https://unpluggedcoder.me/tags/Algorithm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Rust High Performance</title>
+    <link href="https://unpluggedcoder.me/2020/04/20/RustHighPerformance/"/>
+    <id>https://unpluggedcoder.me/2020/04/20/RustHighPerformance/</id>
+    <published>2020-04-20T14:46:20.000Z</published>
+    <updated>2022-09-15T15:51:05.346Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/b08822.png" alt="Rust High Performance"></p><p>《<a href="https://www.packtpub.com/application-development/rust-high-performance">Rust High Performance</a>》</p><p><strong>推荐度: 2.0分</strong></p><p>怎么说呢? 这本书几乎就没有谈任何Rust高性能的编程技巧, 反而大部分都是一些Rust方面浅显的“最佳实践”. 比如使用<a href="https://github.com/rust-lang/rust-clippy">Clippy</a>、<a href="https://github.com/bheisler/criterion.rs">Criterion</a>.</p><p>唯一一个印象比较深刻的就是: 不要在for循环中使用<code>vec[]</code>下标索引的方式迭代访问元素, 这是其它语言经常做的事情, 而在Rust中, 下标访问会进行运行时检查, 如果越界则会panic, 这种检查会损耗性能. 更好的方式是应该用迭代器方法<code>iter()</code></p><p>这个点是在书的开头前两章提到的, 然后整本书就没有再谈任何的Rust高性能编程技巧了. 倒不如《Rust Programming》来得实在. 写这篇文章的目的让大家不要踩坑了.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/b08822.png&quot; alt=&quot;Rust High Performance&quot;&gt;&lt;/p&gt;
+&lt;p&gt;《&lt;a href=&quot;https://www.packtpub.com/application-development/rust-high-pe</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>奈飞文化手册</title>
+    <link href="https://unpluggedcoder.me/2020/04/20/%E5%A5%88%E9%A3%9E%E6%96%87%E5%8C%96%E6%89%8B%E5%86%8C/"/>
+    <id>https://unpluggedcoder.me/2020/04/20/%E5%A5%88%E9%A3%9E%E6%96%87%E5%8C%96%E6%89%8B%E5%86%8C/</id>
+    <published>2020-04-20T14:44:20.000Z</published>
+    <updated>2022-09-15T15:51:05.353Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s29923776.jpg" alt="img"></p><p>《<a href="https://book.douban.com/subject/30356081/">奈飞文化手册</a>》</p><p><strong>推荐度: 4.0分</strong></p><p>这本书带读者从一个人力资源的视角来看奈飞文化. 书的英文名是《Powerful: Building a Culture of Freedom and Responsibility》, 不知道为什么不好好翻译.</p><span id="more"></span><p>这本书给我两个印象比较深刻的点.</p><p>一. <strong>只招成年人</strong>. 这个看似简单, 实际评价的标准却因人而异. 整本书描述的文化前提就是在这样的一群人中才得以推广的文化. 认同公司的价值观, 能够有自驱力去为公司做正确的事.</p><p>二. <strong>让人事也深入理解公司业务</strong>. 这个概念是我以前没有听说过的, 也让我想起来曾经看过一个HR为了找到好的程序员, 创建自己的GitHub账号, 开Repo, 甚至有自己的个人站. 作者这里说的不仅仅是融入技术文化, 而是参与到公司的业务中去, 深入了解公司需要什么样的人才.</p><p>除了上面两点之外的理念可以在《精益创业》和《富人思维》里看到一些类似的观点. 其实最难实践的可能就是透明度了, 在国内这种公司氛围下, 不996就算是幸福的了.</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s29923776.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;《&lt;a href=&quot;https://book.douban.com/subject/30356081/&quot;&gt;奈飞文化手册&lt;/a&gt;》&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐度: 4.0分&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这本书带读者从一个人力资源的视角来看奈飞文化. 书的英文名是《Powerful: Building a Culture of Freedom and Responsibility》, 不知道为什么不好好翻译.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>统计思维</title>
+    <link href="https://unpluggedcoder.me/2020/04/20/Think%20Stats/"/>
+    <id>https://unpluggedcoder.me/2020/04/20/Think%20Stats/</id>
+    <published>2020-04-20T14:40:20.000Z</published>
+    <updated>2022-09-15T15:51:05.350Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s28278025.jpg" alt="img"></p><p>《<a href="https://book.douban.com/subject/26593825/">统计思维—程序员数学之概率统计（第2版）</a>》</p><p><strong>推荐度: 4.0分</strong></p><p>这本书英文名是《Think Stats》, 作者 [[美] Allen B. Downey](<a href="https://book.douban.com/search/Allen">https://book.douban.com/search/Allen</a> B. Downey)还写了一本是《Think Bayes》. </p><p>这本书读完一个多月, 到现在比较有印象的就是分布累计函数(CDF), 从这个角度可以发现出很多有意思的模型. 比如, 一个程序<code>malloc</code>的size大小, 就很像指数分布的累积分布函数(我一开始以为是). 但实际上准确说应该是<a href="https://en.wikipedia.org/wiki/Inverse-chi-squared_distribution">反卡方分布</a>的累积分布函数. 这一点我也是在glibc的<a href="https://github.com/bminor/glibc/blob/master/benchtests/bench-malloc-thread.c">benchtests</a>中发现的.</p><p><img src="/images/Inverse_chi_squared_distribution.png" alt="img"></p><p>此外, 还有假设检验等等流程. 让程序员可以知道如何准确地表述出一个数据指标(虽然实际运用中不会这么去检验…).</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s28278025.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;《&lt;a href=&quot;https://book.douban.com/subject/26593825/&quot;&gt;统计思维—程序员数学之概率统计（第2版）&lt;/a&gt;》&lt;/p&gt;
+&lt;p&gt;</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="Python" scheme="https://unpluggedcoder.me/tags/Python/"/>
+    
+    <category term="统计学" scheme="https://unpluggedcoder.me/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>图说金融史</title>
+    <link href="https://unpluggedcoder.me/2020/03/16/%E5%9B%BE%E8%AF%B4%E9%87%91%E8%9E%8D%E5%8F%B2/"/>
+    <id>https://unpluggedcoder.me/2020/03/16/%E5%9B%BE%E8%AF%B4%E9%87%91%E8%9E%8D%E5%8F%B2/</id>
+    <published>2020-03-16T15:40:20.000Z</published>
+    <updated>2022-09-15T15:51:05.353Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s28746654.jpg" alt="img"></p><p>《<a href="https://book.douban.com/subject/26643579/">图说金融史</a>》</p><p><strong>推荐度: 3.5分</strong></p><p>如果不算早些年读的《货币战争》, 这应该是从象牙塔里出来后读的第一本历史书了. 没有特意挑哪本书, 随意在亚马逊上看到就读了. 感受还是不一样的.</p><span id="more"></span><p>这本书前半本都感觉非常好, 从金融角度看世界的变革, 去寻找中国近代史的裂变的根因. 时间轴很清晰, 循序渐进, 看到近代中国一出不可避免的悲剧正上演. 可能和作者论文主题就是这个时代的关系, 过了这个时代, 也就是下半本书感觉不出作者想表达什么样的主题, 东捡一部分历史说说, 西挑一个人物讲讲, 时间线比较混乱. 当然我本身的金融水平和作者相比有天壤之别, 或许无法理解一些近现代金融衍生物的术语. 豆瓣上有些评论针对作者的图片引用, 由于本身是CS出身的原因, 的确发现作者引用的图片很少有版权出处说明, 不过作者的目的是达到了, 用很多图片讲述了历史性的产物.</p><p>换个角度看历史, 这才是我去了解历史的最大动力. 学校里的历史全部都是围绕着xxx主义来描述, 而学生完全不知道背后究竟发生了什么?真正的原因又是什么?所有的历史变革都逃不开金钱和权力, 亦商亦政都关乎这些. 我将来给孩子讲历史, 一定是围绕着这些实的东西变革来叙述.</p><p>历史总是惊人的相似, 有太多可以借鉴了, 从历史中找到经验和答案来给现代的自己避坑. 就像作者副标题所说的:“正视历史, 是对未来最好的馈赠.”</p><p>最后, 感谢作者李弘🙏!</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s28746654.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;《&lt;a href=&quot;https://book.douban.com/subject/26643579/&quot;&gt;图说金融史&lt;/a&gt;》&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐度: 3.5分&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果不算早些年读的《货币战争》, 这应该是从象牙塔里出来后读的第一本历史书了. 没有特意挑哪本书, 随意在亚马逊上看到就读了. 感受还是不一样的.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="金融学" scheme="https://unpluggedcoder.me/tags/%E9%87%91%E8%9E%8D%E5%AD%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>那些由Rust打造的高效生产力工具(Updated on 2020-2-25)</title>
+    <link href="https://unpluggedcoder.me/2020/02/18/RustTools/"/>
+    <id>https://unpluggedcoder.me/2020/02/18/RustTools/</id>
+    <published>2020-02-18T14:36:20.000Z</published>
+    <updated>2022-09-15T15:51:05.346Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/rust_tool.jpg" alt="rust_tool"></p><p>最近沉迷于一批<a href="https://www.rust-lang.org/">Rust</a>编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅.</p><span id="more"></span><h1 id="ripgrep"><a href="#ripgrep" class="headerlink" title="ripgrep"></a>ripgrep</h1><p>最刁的应该就是<a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>了, 名称也起得很调皮: <code>R.I.P grep</code>, 意图很明显了, 就是取代grep的, 且实际性能碾压grep. 作者在他的<a href="https://blog.burntsushi.net/ripgrep/">文章</a>中列举了很多benchmark. 截取一个感受一下:</p><table><thead><tr><th>Tool</th><th>Command</th><th>Line count</th><th>Time</th></tr></thead><tbody><tr><td>ripgrep</td><td><code>rg -L -u -tc -n -w &#39;[A-Z]+_SUSPEND&#39;</code></td><td>404</td><td><strong>0.079s</strong></td></tr><tr><td><a href="https://github.com/gvansickle/ucg">ucg</a></td><td><code>ucg --type=cc -w &#39;[A-Z]+_SUSPEND&#39;</code></td><td>390</td><td>0.163s</td></tr><tr><td><a href="https://www.gnu.org/software/grep/">GNU grep</a></td><td><code>egrep -R -n --include=&#39;*.c&#39; --include=&#39;*.h&#39; -w &#39;[A-Z]+_SUSPEND&#39;</code></td><td>404</td><td>0.611s</td></tr></tbody></table><p>不过, 我用得最多的并不是<code>rg</code>命令, 而是在vim中的<a href="https://github.com/Yggdroot/LeaderF">LeaderF</a>插件的模糊匹配, 速度也是贼快.</p><h1 id="inferno"><a href="#inferno" class="headerlink" title="inferno"></a>inferno</h1><p><a href="https://github.com/jonhoo/inferno">inferno</a>这个工具很多人不常用, 但是对我的帮助是最大的. 几乎秒生成🔥火焰图的工具, 和原版<a href="https://github.com/brendangregg/FlameGraph">FlameGraph</a>相比, 速度快了18~20倍.</p><p>贴一个作者的benchmark:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">collapse/dtrace/1       time:   [8.2767 ms 8.2817 ms 8.2878 ms]</span><br><span class="line">                        thrpt:  [159.08 MiB/s 159.20 MiB/s 159.29 MiB/s]</span><br><span class="line">collapse/dtrace/12      time:   [3.8631 ms 3.8819 ms 3.9019 ms]</span><br><span class="line">                        thrpt:  [337.89 MiB/s 339.63 MiB/s 341.28 MiB/s]</span><br><span class="line"></span><br><span class="line">collapse/perf/1         time:   [16.386 ms 16.401 ms 16.416 ms]</span><br><span class="line">                        thrpt:  [182.37 MiB/s 182.53 MiB/s 182.70 MiB/s]</span><br><span class="line">collapse/perf/12        time:   [4.8056 ms 4.8254 ms 4.8460 ms]</span><br><span class="line">                        thrpt:  [617.78 MiB/s 620.41 MiB/s 622.97 MiB/s]</span><br><span class="line"></span><br><span class="line">collapse/sample         time:   [8.9132 ms 8.9196 ms 8.9264 ms]</span><br><span class="line">                        thrpt:  [155.49 MiB/s 155.61 MiB/s 155.72 MiB/s]</span><br><span class="line"></span><br><span class="line">flamegraph              time:   [16.071 ms 16.118 ms 16.215 ms]</span><br><span class="line">                        thrpt:  [38.022 MiB/s 38.250 MiB/s 38.363 MiB/s]</span><br></pre></td></tr></table></figure><p>感受一下对比:</p><p><img src="/images/inferno.jpeg" alt="EP1aHvRUcAMjLWG"></p><h1 id="broot"><a href="#broot" class="headerlink" title="broot"></a>broot</h1><p>还在用<code>tree</code>命令吗? 试试<a href="https://github.com/Canop/broot">broot</a>吧! 交互式的树形结构查找, 一目了然, 关键是毫秒级的查询响应.</p><p><img src="/images/broot.png" alt="broot"></p><h1 id="du"><a href="#du" class="headerlink" title="du"></a>du</h1><h2 id="dua-cli"><a href="#dua-cli" class="headerlink" title="dua-cli"></a>dua-cli</h2><p><a href="https://github.com/Byron/dua-cli"><strong>dua</strong></a> (-&gt; <em>Disk Usage Analyzer</em>) , 类似<code>du</code>命令, 但是提供交互式的查看方式.</p><p><img src="https://camo.githubusercontent.com/03f7bfbeeef933e2f2aef1e51cace155216b1d8f/68747470733a2f2f61736369696e656d612e6f72672f612f4161465530665045324536313258436a704e67394a654167582e737667" alt="dua-cli"></p><h2 id="dust"><a href="#dust" class="headerlink" title="dust"></a>dust</h2><p>du + rust &#x3D; <a href="https://github.com/bootandy/dust">dust</a>. 更直观的方式显示du命令. 不过不是常规的树型结构, 而是倒树型.</p><p><img src="https://github.com/bootandy/dust/raw/master/media/snap.png" alt="dust"></p><h2 id="dutree"><a href="#dutree" class="headerlink" title="dutree"></a>dutree</h2><p><a href="https://github.com/nachoparker/dutree">dutree</a>, <code>du</code>命令+<code>tree</code>命令, 提供 <em>files-only</em> 功能.</p><p><img src="https://github.com/nachoparker/dutree/raw/master/resources/dutree_featured.png" alt="dutree"></p><p>上面三个工具, 由于<code>dua-cli</code>不包含树型等复杂的图形, 所以在统计上速度最快(以<code>--depth 1</code>测试). 各有千秋, 大家可以自选.</p><h1 id="bat"><a href="#bat" class="headerlink" title="bat"></a>bat</h1><p><img src="https://github.com/sharkdp/bat/raw/master/doc/logo-header.svg?sanitize=true" alt="bat"><br>这个<a href="https://github.com/sharkdp/bat">bat</a>不是我们想的BAT. 目的是取代<code>cat</code>(cat with wings -&gt; bat).  以前一直认为cat就是打印到终端, 用来查看文件而已, 直到看到了bat:</p><p><img src="/images/bat1.png" alt="bat1"></p><p><img src="/images/bat2.png" alt="bat2"></p><p>自动根据文件类型做语法高亮, 好看多了. 还有其它的命令参数, 甚至有一个和<code>ripgrep</code>结合的命令: <code>batgrep</code>, 带高亮地打印前者的输出.</p><h1 id="hexyl"><a href="#hexyl" class="headerlink" title="hexyl"></a>hexyl</h1><p><img src="https://github.com/sharkdp/hexyl/raw/master/doc/logo.svg?sanitize=true" alt="hexyl"></p><p>如果要查看二进制文件内容怎么办? bat只能打印出来告诉你是 &lt;BINARY&gt;. 这时候需要<a href="https://github.com/sharkdp/hexyl">hexyl</a>, 非常友好的二进制查看工具, 曾经还在苦苦寻找好用GUI工具.</p><p><img src="/images/hexyl.png" alt="hexyl"></p><p>当然还支持很多参数, 自定义查看方式.</p><h1 id="dtool"><a href="#dtool" class="headerlink" title="dtool"></a>dtool</h1><p>除了查看文件内容或者二进制数据外, 我们通常还会计算文件哈希值或者一些其它的文件常见操作, 而<a href="https://github.com/guoxbin/dtool">dtool</a>这个工具就像一个开发者的小型瑞士军刀, 提供了开发者很多常见命令操作, 如计算哈希值、编码转换等等常见操作. </p><p>convert a string to base64</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo -n abc | dtool s2h | dtool h2b64</span><br><span class="line">YWJj</span><br></pre></td></tr></table></figure><p>convert a encoded timestamp to date</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo -n 2c28e75d | dtool nd -tu32 | dtool ts2d</span><br><span class="line">2019-12-04 11:29:48</span><br></pre></td></tr></table></figure><p>convert a jpeg to base64</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat pic.jpg | dtool b2h | dtool h2b64</span><br><span class="line">/9j/4AAQSkZJR...</span><br></pre></td></tr></table></figure><p>calculate file md5</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat pic.jpg | dtool b2h | dtool hash -a md5</span><br><span class="line">0x1884b72e23b0c93320bac6b050478ff4</span><br></pre></td></tr></table></figure><h1 id="ytop"><a href="#ytop" class="headerlink" title="ytop"></a>ytop</h1><p>常用的<code>htop</code>命令也有一个Rust的版本, 叫<a href="https://github.com/cjbassi/ytop">ytop</a>, 样子也是很酷炫.</p><p><img src="/images/ytop.gif" alt="ytop"></p><h1 id="procs"><a href="#procs" class="headerlink" title="procs"></a>procs</h1><p>曾经也是各种记ps命令的参数, 后来用<code>htop</code>. 现在有了<a href="https://github.com/dalance/procs">procs</a>, 功能上虽不如<code>htop</code>丰富, 但是能够查看docker容器的状态.</p><p><img src="/images/procs1.png" alt="procs1"></p><p><img src="/images/procs2.png" alt="procs2"></p><p>后面再分享两个比较fancy的工具.</p><h1 id="lsd"><a href="#lsd" class="headerlink" title="lsd"></a>lsd</h1><p><a href="https://github.com/Peltoche/lsd">lsd</a>看名称就是替代<code>ls</code>的, 加了各种<em>icon</em>和高亮, 需要安装<code>nerd</code>字体</p><p><img src="/images/screen_lsd.png" alt="screen_lsd"></p><h1 id="starship"><a href="#starship" class="headerlink" title="starship"></a>starship</h1><p><img src="https://raw.githubusercontent.com/starship/starship/master/media/logo.png" alt="starship_logo"></p><p>光看logo和名字就知道很fancy了, 以模块的哲学来定义shell终端展示.</p><p><img src="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif" alt="starship"></p><p>还有另外一个叫<a href="https://github.com/nushell/nushell">nushell</a>, 用终端制表的方式打印输出, 和上面几个相比就没有高亮了.</p><h1 id="tui-rs"><a href="#tui-rs" class="headerlink" title="tui-rs"></a>tui-rs</h1><p>最后祭出<a href="https://github.com/fdehau/tui-rs">tui-rs</a>, 是一个Rust的终端GUI library, 提供各种Widget, 可以用来DIY自己的神器. 包括上面的<code>ytop</code>也是基于tui-rs开发的.</p><p><img src="https://github.com/fdehau/tui-rs/raw/master/assets/demo.gif" alt="tui-rs"></p><p>感谢各位作者和Rust, 给大家带来的这些高效工具, 欢迎推荐👏.</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/rust_tool.jpg&quot; alt=&quot;rust_tool&quot;&gt;&lt;/p&gt;
+&lt;p&gt;最近沉迷于一批&lt;a href=&quot;https://www.rust-lang.org/&quot;&gt;Rust&lt;/a&gt;编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+    <category term="Productivity tools" scheme="https://unpluggedcoder.me/tags/Productivity-tools/"/>
+    
+    <category term="ripgrep" scheme="https://unpluggedcoder.me/tags/ripgrep/"/>
+    
+    <category term="lsd" scheme="https://unpluggedcoder.me/tags/lsd/"/>
+    
+    <category term="broot" scheme="https://unpluggedcoder.me/tags/broot/"/>
+    
+    <category term="starship" scheme="https://unpluggedcoder.me/tags/starship/"/>
+    
+    <category term="procs" scheme="https://unpluggedcoder.me/tags/procs/"/>
+    
+    <category term="dua-cli" scheme="https://unpluggedcoder.me/tags/dua-cli/"/>
+    
+    <category term="dust" scheme="https://unpluggedcoder.me/tags/dust/"/>
+    
+    <category term="dutree" scheme="https://unpluggedcoder.me/tags/dutree/"/>
+    
+    <category term="inferno" scheme="https://unpluggedcoder.me/tags/inferno/"/>
+    
+    <category term="dtool" scheme="https://unpluggedcoder.me/tags/dtool/"/>
+    
+    <category term="ytop" scheme="https://unpluggedcoder.me/tags/ytop/"/>
+    
+    <category term="bat" scheme="https://unpluggedcoder.me/tags/bat/"/>
+    
+    <category term="tui-rs" scheme="https://unpluggedcoder.me/tags/tui-rs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Rust入门失败之Macros</title>
+    <link href="https://unpluggedcoder.me/2020/02/15/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BMacros/"/>
+    <id>https://unpluggedcoder.me/2020/02/15/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BMacros/</id>
+    <published>2020-02-14T16:25:20.000Z</published>
+    <updated>2022-09-15T15:51:05.348Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li>Macro和函数的区别可以参考<a href="https://doc.rust-lang.org/book/ch19-06-macros.html#the-difference-between-macros-and-functions">官方文档</a>. 简单地说Macro是Rust元编程的强大武器, 和C++的模板在同一个逻辑层面. 和C语言的宏最大的区别不是C语言宏的简单文本替换, 而是语法层面的处理.</li><li>Marcos的扩展时机是在类型检查之前, 也远在机器代码码生成前. 宏会被特换成Rust代码.</li><li>Rust Macro的同样也是之前说过的基于模式匹配, 因此不会出现插入不对称括号的Rust代码等这类错误.</li><li>Rust在扩展Macro时必须要先定义, 这和函数不同, 函数的定义位置顺序没有要求, 而Rust代码在编译时遇到Macro必须先展开, 而不会继续走下去.</li></ul><h1 id="Macro模式匹配规则"><a href="#Macro模式匹配规则" class="headerlink" title="Macro模式匹配规则"></a>Macro模式匹配规则</h1><ul><li><p>以<code>assert_eq!</code>为例, 来解释下Macro的模式匹配:</p><p><img src="/images/macro_assert_eq.png" alt="macro_assert_eq"></p><ul><li><p><code>assert_eq</code>是Macro的名称, 后面紧随的delimiter没有强制要求是大括号, 甚至可以是小括号或者中括号. 调用时也是一样, 下面的都是合法的:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">assert_eq!</span>(<span class="title function_ invoke__">gcd</span>(<span class="number">6</span>, <span class="number">10</span>), <span class="number">2</span>);</span><br><span class="line"><span class="built_in">assert_eq!</span>[<span class="title function_ invoke__">gcd</span>(<span class="number">6</span>, <span class="number">10</span>), <span class="number">2</span>];</span><br><span class="line"><span class="built_in">assert_eq!</span>&#123;<span class="title function_ invoke__">gcd</span>(<span class="number">6</span>, <span class="number">10</span>), <span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">x</span> = <span class="built_in">vec!</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="variable">y</span> = <span class="built_in">vec!</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br></pre></td></tr></table></figure></li><li><p><code>⇒</code>符号左边的叫<code>MacroMatcher</code>, 简单地说可以理解为<em>pattern</em>, 即模式匹配. 它的匹配规则是以<code>token</code>为导向的, 这点和正则匹配不同(以字符为导向的匹配). 因此在<em>pattern</em>里加入空格或者注释都是允许的.</p></li><li><p>每个<em>pattern</em>由一对<code>$name:designator</code>(代号)组成, 前者是代号的变量名, 后者代号指示这个变量将按哪种类型规则来匹配.</p><p><img src="/images/rust_macro_1.png" alt="rust_macro_1"></p><p>常见的有:</p><ul><li><code>item</code>: an item, such as a function, a struct, a module, etc.</li><li><code>block</code>: a block (<em>i.e.</em> a block of statements and&#x2F;or an expression, surrounded by braces)</li><li><code>stmt</code>: a statement</li><li><code>pat</code>: a pattern</li><li><code>expr</code>: an expression</li><li><code>ty</code>: a type</li><li><code>ident</code>: an identifier</li><li><code>path</code>: a path (<em>e.g.</em> <code>foo</code>, <code>::std::mem::replace</code>, <code>transmute::&lt;_, int&gt;</code>, …)</li><li><code>meta</code>: a meta item; the things that go inside <code>#[...]</code> and <code>#![...]</code> attributes</li><li><code>tt</code>: a single token tree</li></ul></li></ul></li><li><p>比较难理解的是多重匹配, 格式如下:</p><p><img src="/images/rust_macro_2.png" alt="rust_macro_2"></p><ul><li><p>中间的部分和单个<em>pattern</em>一样, 不同的是多了一对<code>$()</code> 和 <code>,*</code> , <code>*</code>号代表前面<code>$(...)</code>内的内容会出现0或多次, 和正则一样. 而逗号<code>,</code>只是一个分隔符, 甚至不要求是逗号.</p></li><li><p>编译(展开)宏的时候, 重复<em>pattern</em>的内容用法也和上面基本类似, 多的也只是一个<code>$(...)*</code>符号, 用下面的比较好理解:</p><p><img src="/images/rust_macro_3.png" alt="rust_macro_3"></p><p>对于每一对出现对<code>$key</code>和<code>$value</code>, 都将用<code>$(...)*</code>内的<code>hm.insert(...);</code> 语句替换.</p></li></ul></li></ul><h1 id="Macro调试"><a href="#Macro调试" class="headerlink" title="Macro调试"></a>Macro调试</h1><p>  有的时候不知道自己写的macro最终被扩展成什么样子, 这时候有两种方法来打印出<code>rustc</code>扩展后的代码:</p><ul><li><p>直接调用<code>rustc</code>编译器(需要nightly版本):</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo +nightly rustc --profile=check -- -Zunstable-options --pretty=expanded</span></span><br></pre></td></tr></table></figure></li><li><p>用第三方库<a href="https://github.com/dtolnay/cargo-expand">cargo-expand</a> , 它有个优点就是打印出来的是格式化且带语法高亮的代码, 可读性非常好.</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo <span class="built_in">expand</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">or <span class="built_in">expand</span> a particular <span class="built_in">test</span> target:</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo <span class="built_in">expand</span> --<span class="built_in">test</span> test_something</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">or <span class="built_in">expand</span> bench target</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo <span class="built_in">expand</span> --bench bench_name</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">or <span class="built_in">expand</span> a specific module or <span class="built_in">type</span> or <span class="keyword">function</span> only:</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo <span class="built_in">expand</span> path::to::module</span></span><br></pre></td></tr></table></figure></li></ul><p>最后, 发现一篇对macro解释非常好的文章, 可以参考:<br><a href="https://medium.com/@phoomparin/a-beginners-guide-to-rust-macros-5c75594498f1">A Beginner’s Guide to Rust Macros ✨</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;Macro和函数的区别可以参考&lt;a href=&quot;https://doc.rust-lang.org/book/ch19-06-macros.html#the-difference-between-macros-and-functions&quot;&gt;官方文档&lt;/a&gt;. 简</summary>
+      
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+    <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="Pattern" scheme="https://unpluggedcoder.me/tags/Pattern/"/>
+    
+    <category term="Macros" scheme="https://unpluggedcoder.me/tags/Macros/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深度学习入门：基于Python的理论与实现</title>
+    <link href="https://unpluggedcoder.me/2020/02/01/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%EF%BC%9A%E5%9F%BA%E4%BA%8EPython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0/"/>
+    <id>https://unpluggedcoder.me/2020/02/01/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%EF%BC%9A%E5%9F%BA%E4%BA%8EPython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0/</id>
+    <published>2020-02-01T02:06:20.000Z</published>
+    <updated>2022-09-15T15:51:05.354Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s29815955.jpg" alt="s29815955"></p><p><strong>推荐度: 4.5分</strong></p><ul><li>作者从基础的与或非知识开始普及神经网络, 而且主要一点在于全书非常善于用言之易懂的类比来举例说明. 为初学者了解这门学科起到了很好的帮助.</li><li>对数学的要求最多就到偏导数和线性代数的矩阵乘法, 而背后更多的算法和数学原理作者并没有一一展开细说. 但是通过上面一点, 大致的都能了解到深度学习优化算法和参数背后的意义, 为想要更加深入研究的人铺平了道路.</li><li>如果需要投入到机器学习实践中的话, 这本绝不是那种看过一遍就束之高阁的书籍.</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s29815955.jpg&quot; alt=&quot;s29815955&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐度: 4.5分&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;作者从基础的与或非知识开始普及神经网络, 而且主要一点在于全书非常善于用言之易懂</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="Python" scheme="https://unpluggedcoder.me/tags/Python/"/>
+    
+    <category term="Deep Learning" scheme="https://unpluggedcoder.me/tags/Deep-Learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>小狗钱钱</title>
+    <link href="https://unpluggedcoder.me/2020/02/01/%E5%B0%8F%E7%8B%97%E9%92%B1%E9%92%B1/"/>
+    <id>https://unpluggedcoder.me/2020/02/01/%E5%B0%8F%E7%8B%97%E9%92%B1%E9%92%B1/</id>
+    <published>2020-02-01T01:46:20.000Z</published>
+    <updated>2022-09-15T15:51:05.353Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/71ERWhXv83L.jpg" alt="71ERWhXv83L"></p><h4 id="《小狗钱钱》"><a href="#《小狗钱钱》" class="headerlink" title="《小狗钱钱》"></a>《小狗钱钱》</h4><p><strong>推荐度: 3.5分</strong></p><p>这是看博多·舍费尔的第二本书, 这本书可以说是把《财务自由之路》的经验总结成了非常好理解的儿童财商培养故事.</p><h4 id="《小狗钱钱2》"><a href="#《小狗钱钱2》" class="headerlink" title="《小狗钱钱2》"></a>《小狗钱钱2》</h4><p>这本书就不推荐了, 副标题是“发掘和培养孩子的优秀品格”. 感觉倒不如用这个做书名. 非常牵强的情节, 主题不再是小狗, 也不是钱, 满满的鸡汤, 干就完了.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/71ERWhXv83L.jpg&quot; alt=&quot;71ERWhXv83L&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;《小狗钱钱》&quot;&gt;&lt;a href=&quot;#《小狗钱钱》&quot; class=&quot;headerlink&quot; title=&quot;《小狗钱钱》&quot;&gt;&lt;/a&gt;《小狗钱钱》&lt;</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="育儿" scheme="https://unpluggedcoder.me/tags/%E8%82%B2%E5%84%BF/"/>
+    
+    <category term="理财" scheme="https://unpluggedcoder.me/tags/%E7%90%86%E8%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>对冲：不确定时代如何聪明地冒险</title>
+    <link href="https://unpluggedcoder.me/2020/01/28/%E5%AF%B9%E5%86%B2/"/>
+    <id>https://unpluggedcoder.me/2020/01/28/%E5%AF%B9%E5%86%B2/</id>
+    <published>2020-01-28T13:17:20.000Z</published>
+    <updated>2022-09-15T15:51:05.353Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/s33546804.jpg" alt="img"></p><p><strong>推荐分：3.5</strong></p><p>这书名怎么说呢，字面翻译过来应该是《一位走进妓院的经济学家》😂</p><p>作者在前八章都没有谈“对冲”这个词，一直在讨论风险这个概念。作为一位经济学家，并没有大谈金融领域的对冲操作，而是列举了生活中很多高风险职业管理风险的方法，进而引申到金融领域。比如，书名中的妓院，还有狗仔队、电影行业、种马、魔术等。</p><p>个人感觉对冲并不是整本书的主题。相比于对冲操作本身，感觉作者更希望读者清楚自己的目标, 以及如何处理需要面临的风险。首先，要清楚自己的目标，不要盲目的追求高风险，这和《低风险，高回报》一书的作者一样，对大多数人来说，高风险不是什么好事，有很多低风险的选择。其次，风险有系统风险和特殊风险。前者是整个经济发展的趋势风险，后者可以理解为个体的风险因素。不同风险有不同的管理策略。再次，面对风险，理性很重要。赌徒心态是很大的忌讳。</p><p>这些是我认为作者总结出的面对风险的宏观原则，而作者在书后半部提到的对冲和保险是管理风险的手段。看到么，对冲只是手段之一，相比保险解决下跌风险的手段，对冲缩小了风险影响的同时也减少了收益的上限(切断了风险上下端)。应该合理的利用对冲，把它当成降低风险的工具，而不是冒险追求高回报的手段。</p><p>最后，任何风险管理策略都无法应对所有情况，面对不确定性不仅需要靠经验总结, 心态更重要, 让我想起:“唯一不变的就是变化”😂, 僵化的惯性思维会让自己处于被动的状态. 主动去迎接未知的未知, 面对风险的套路始终不变: 定义目标, 找到完成目标的最佳方式, 同时最小化下跌风险.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/s33546804.jpg&quot; alt=&quot;img&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐分：3.5&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这书名怎么说呢，字面翻译过来应该是《一位走进妓院的经济学家》😂&lt;/p&gt;
+&lt;p&gt;作者在前八章都没有谈“对冲”</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="风险" scheme="https://unpluggedcoder.me/tags/%E9%A3%8E%E9%99%A9/"/>
+    
+    <category term="经济学" scheme="https://unpluggedcoder.me/tags/%E7%BB%8F%E6%B5%8E%E5%AD%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>爱、金钱和孩子：育儿经济学</title>
+    <link href="https://unpluggedcoder.me/2020/01/20/%E7%88%B1%E3%80%81%E9%87%91%E9%92%B1%E5%92%8C%E5%AD%A9%E5%AD%90%EF%BC%9A%E8%82%B2%E5%84%BF%E7%BB%8F%E6%B5%8E%E5%AD%A6/"/>
+    <id>https://unpluggedcoder.me/2020/01/20/%E7%88%B1%E3%80%81%E9%87%91%E9%92%B1%E5%92%8C%E5%AD%A9%E5%AD%90%EF%BC%9A%E8%82%B2%E5%84%BF%E7%BB%8F%E6%B5%8E%E5%AD%A6/</id>
+    <published>2020-01-20T15:59:20.000Z</published>
+    <updated>2022-09-15T15:51:05.354Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/47575169._UY1187_SS1187_.jpg" alt="Love, Money, and Parenting"></p><p><strong>推荐度: 2.5</strong></p><p>当时在推上看到的这本书, 从标题上看很有吸引力, 一直想要读, 后来亚马逊打折, 只要RMB14.99, 现在长期是13.99.</p><p>或许期望太高, 也或许价格反应出了价值… 其实应该把副标题翻译出来: 如何用经济学来解释我们的育儿方式. 这个角度非常有意思, 怕读者以为是育儿书, 作者上来就说: 这不是一本教你如何育儿的书. 的确, 作者例举了很多实验数据来验证不同教养方式背后的动机, 所以, 一页就能讲明白的道理, 愣是摆事实讲道理说了好几页.</p><p>回到书的内容上, 首先根据对孩子的干预程度不同, 作者一上来先和读者拉通四个教养方式的共识.</p><p><img src="/images/image-20200121000515770.png" alt="image-20200121000515770"></p><p>这四种教养方式大致是下面这几个意思:</p><ul><li><strong>忽视型</strong>: 娃, 你是谁?从哪里来?要到哪里去?</li><li><strong>放任型</strong>: 娃, 你爱咋滴咋滴.</li><li><strong>专断型</strong>: 娃, 打你是为你好.</li><li><strong>权威型</strong>: 娃, 咱们讲道理!</li></ul><p>当然, 从上到下, 孩子的<strong>平均成绩</strong>表现(注意, 是<strong>成绩</strong>)是逐层递增. 在某些发达国家忽视型的父母可能已经触犯法律; 而大多北欧国家采取放任型; 意大利和某些宗教国偏向专断型; 中国、美国父母大多归为权威型.</p><p>作者从经济学角度的动机来说明父母采取这些不同教养方式背后的动机. 结合了不同时代、社会环境、教育政策、性别、生育政策、宗教等等各方面因素反复论证. 国外的作者大都比较严谨, 这本书和《贫穷的本质》很像, 都是用了许多不同角度的随机对照数据来说明问题.</p><p>不过这本书背后的道理比《贫穷的本质》更简单一些, 简单地说: 绝大多数父母对孩子的教养方式差异的背后动机是出于对孩子将来的顾虑. 听上去像是废话, 那换个方式说就是教育的投资回报率.</p><p>在社会不平等程度较低的北欧发达国家, 大部分人将来的就业都比较稳定, 学校也基本不考核, 老师的地位很高(优秀的人才更愿意投入到教育事业中), 因此父母都更加重视孩子的创造力、独立性而非成绩.</p><p>而在工业时代, 发达国家也曾经经历过专断型, 那时候社会阶层分明, 不努力就没有出路, 因此父母对孩子体罚, 甚至让孩子参加工作. 相比教育的投资回报率, 直接当童工对家庭更有利.</p><p>而现在的中国和美国, 通过教育可以很大程度上改变一个人的命运, 因此兴起了“直升机”父母. 盘旋在孩子上头, 各种早教、补习班都是为了将来的某个考试. 孩子的创造力和独立性被大大降低.</p><p>国外是否像书里说的那样我也不知道, 但是国内的确如此.</p><p>我的感觉是未来孩子的教育方式仍然会发生变化, 权威型教养也不再适用. 因为很多职业将被机器取代, 剩下的职业则是更具有创造性或者对教育要求门槛越高的职业. 人从生来就要不停地学习, 但学习的目的不是学习知识, 而是要尽快学习怎么做自己, 怎么在社会做一个自己想成为的人.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/47575169._UY1187_SS1187_.jpg&quot; alt=&quot;Love, Money, and Parenting&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐度: 2.5&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当时在推上看到的这本书, 从标</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="经济学" scheme="https://unpluggedcoder.me/tags/%E7%BB%8F%E6%B5%8E%E5%AD%A6/"/>
+    
+    <category term="育儿" scheme="https://unpluggedcoder.me/tags/%E8%82%B2%E5%84%BF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Understanding Compression</title>
+    <link href="https://unpluggedcoder.me/2020/01/17/Understanding%20Compression/"/>
+    <id>https://unpluggedcoder.me/2020/01/17/Understanding%20Compression/</id>
+    <published>2020-01-17T15:46:20.000Z</published>
+    <updated>2022-09-15T15:51:05.350Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/images/lrg.jpg" alt="Understanding Compression"></p><p><strong>推荐度: 4.5分</strong></p><p><strong>推荐理由</strong></p><ul><li>短短200页, 把压缩算法由简入深, 图文并茂, 讲得非常通俗理解.</li><li>跟随整个压缩算法演进的历史, 结合那些伟大压缩算法背后的人和故事, 再加上作者的幽默感, 可以说整本书读起来全程无尿点.</li><li>对开发者(像我这样数学水平差的码农)非常友好, 不需要太多数学知识.</li><li>没有用任何一行代码, 但是看完这本书再去看那些压缩算法代码就有一种了然于胸的感觉, 尤其是对每类算法特性和历史背景有了宏观上的深刻理解.</li><li>作者的目的是让现代程序员对各类压缩算法的特性有一个全局的理解, 并且希望程序员在开发过程中能够很好的理解自己处理的数据特性, 从而使用最合适的压缩算法来提高性能.</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;/images/lrg.jpg&quot; alt=&quot;Understanding Compression&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐度: 4.5分&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;推荐理由&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;短</summary>
+      
+    
+    
+    
+    <category term="书" scheme="https://unpluggedcoder.me/categories/%E4%B9%A6/"/>
+    
+    
+    <category term="Algorithm" scheme="https://unpluggedcoder.me/tags/Algorithm/"/>
+    
+    <category term="Compression" scheme="https://unpluggedcoder.me/tags/Compression/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Rust入门失败之Concurrency</title>
+    <link href="https://unpluggedcoder.me/2019/12/24/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BConcurrency/"/>
+    <id>https://unpluggedcoder.me/2019/12/24/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BConcurrency/</id>
+    <published>2019-12-24T15:52:20.000Z</published>
+    <updated>2022-09-15T15:51:05.347Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Thread"><a href="#Thread" class="headerlink" title="Thread"></a>Thread</h2><ul><li><code>main</code>函数结束, 则程序退出, 即使仍然有线程在运行;</li><li>用<code>spawn</code>返回的handle.join()来等待线程结束, 但是有一点不一样, Rust线程崩溃(panic)不会影响到其它线程, 因此程序可以很容易从某个错误状态下恢复.</li><li>当需要在线程间共享<em>immutable</em>数据时, 使用<code>std::sync::Arc</code>智能指针, 并调用它的<code>clone()</code>方法.</li></ul><h2 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h2><ul><li><p><code>std::sync::mpsc::channel()</code>返回一个Sender和Receiver, 分别调用<code>send(item)</code> 和 <code>recv()</code>方法发送和接收数据, 后者会block住线程. Rust会根据上下文推断Channel操作的数据类型.</p></li><li><p>Rust的Channel比Unix的pipe机制更快, 数据移动而非拷贝. 例如发送一个<code>String</code>, 实际成本只发送了三个机器字(<em>machine word</em>): <em>length, capacity</em> and <em>pointer</em>.</p></li><li><p><code>send</code>和<code>recv</code>两个调用只会在另一个被dropped的时候失败. 换句话说就是如果<em>Receiver</em>被drop了, 那<code>send</code>会失败, 反之亦然. 因此, 如果存在一个Sender, 那么下面这个循环recv就会在Sender销毁时正常终止结束:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="keyword">let</span> <span class="variable">Ok</span>(text) = receiver.<span class="title function_ invoke__">recv</span>() &#123;</span><br><span class="line">    <span class="title function_ invoke__">do_something_with</span>(text);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>Receiver支持迭代, 因此更优雅的写法是(二者等价):</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">text</span> <span class="keyword">in</span> receiver &#123;</span><br><span class="line">    <span class="title function_ invoke__">do_something_with</span>(text);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>Channel是std::sync::mpsc模块里的, 全称是<em>multi-producer, single-consumer</em>. 这种操作在编程中很常见. 因此<code>Sender&lt;T&gt;</code>实现里<em>Clone</em> trait. 可以拷贝出多个, 然后在不同的线程里send. 当然, 由于是<em>single-consumer</em>, <code>Receiver&lt;T&gt;</code>不能clone.</p></li><li><p>Rust Channel高性能的原因在于有几种不同的实现:</p><ul><li>如果只发送一个object, 那么Rust内部有一个特殊的“one-shot”队列使得发送一个的成本最小化.</li><li>但是当你发送第二个object的时候, Rust会切换到另一种队列实现. 这个队列专门为实现大量数据传输做了优化, 尽可能降低传输大开销.</li><li>但是如果你Clone了Sender, 那么Rust又会使用另一种线程安全的队列版本. 相比于前两种实现, 这个的性能自然是最慢的, 但是即便最慢, 它的<em>overhead</em>也很低.它的队列采用了一个无锁的队列. 因此, 发送和接收时除了move之外, 仅有一些堆上内存分配的原子操作. 而且只有在Receiver需要sleep时才会用到系统调用, 因此基本上对吞吐量没有任何设限.</li></ul></li><li><p>由于Rust Channel的高性能, 通常会引起问题的就是发送数据的速度大于Receiver处理的速度. 可以使用<code>sync_channel</code>, 当发送的队列达到指定数量后, <code>send</code>操作会被阻塞.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::mpsc::sync_channel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> (sender, receiver) = <span class="title function_ invoke__">sync_channel</span>(<span class="number">1000</span>);</span><br></pre></td></tr></table></figure></li></ul><h2 id="Thread-Safety-Send-and-Sync"><a href="#Thread-Safety-Send-and-Sync" class="headerlink" title="Thread Safety: Send and Sync"></a>Thread Safety: Send and Sync</h2><p>上面谈到的在线程间传递和共享数据的能力来自于两个trait: <code>std::marker::Send</code> 和 <code>std::marker::Sync</code></p><ul><li>实现了<code>Send</code>的类型可以安全地<em>move</em>给其它线程.</li><li>实现了<code>Sync</code>的类型可以在线程间进行<em>non-mut reference</em>共享, 同时要求该类型的引用类型&amp;T实现<code>Send</code> trait.</li></ul><p>如下图:</p><p><img src="/images/send_and_sync.png" alt="send_and_sync"></p><ul><li>可以看到有一种类型是不能Send的, <code>Rc&lt;String&gt;</code>, 做为一个带引用计数的智能指针, 当两个线程都拥有它时, 同时对引用计数操作就会引起data race.</li></ul><h2 id="Mutex-lt-T-gt"><a href="#Mutex-lt-T-gt" class="headerlink" title="Mutex&lt;T&gt;"></a>Mutex&lt;T&gt;</h2><ul><li><p>大部分可以看文档, 和其它语言的互斥锁类似.</p></li><li><p>有一个细节值得注意:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// All threads have shared access to this big context struct.</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">FernEmpireApp</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    waiting_list: Mutex&lt;WaitingList&gt;,</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">FernEmpireApp</span> &#123;</span><br><span class="line">    <span class="comment">/// Add a player to the waiting list for the next game.</span></span><br><span class="line">    <span class="comment">/// Start a new game immediately if enough players are waiting.</span></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">join_waiting_list</span>(&amp;<span class="keyword">self</span>, player: PlayerId) &#123;</span><br><span class="line">        <span class="comment">// Lock the mutex and gain access to the data inside.</span></span><br><span class="line">        <span class="comment">// The scope of `guard` is a critical section.</span></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">guard</span> = <span class="keyword">self</span>.waiting_list.<span class="title function_ invoke__">lock</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Now do the game logic.</span></span><br><span class="line">        guard.<span class="title function_ invoke__">push</span>(player);</span><br><span class="line">        <span class="keyword">if</span> guard.<span class="title function_ invoke__">len</span>() == GAME_SIZE &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">players</span> = guard.<span class="title function_ invoke__">split_off</span>(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">self</span>.<span class="title function_ invoke__">start_game</span>(players);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这个函数对<em>waiting_list</em>进行了修改, 而函数签名是<em>immutable</em> 的 <code>&amp;self</code>. 其实这里需要重新理解Rust中的<code>mut</code>另一层含义.</p><ul><li>在Rust中<code>mut</code>意味着排他性访问(<em>exclusive access</em>);</li><li>Non-mut意味着共享访问(<em>shared access</em>);</li></ul><p>这里的<code>Mutex.lock()</code>可以保证不会有竞争, 因此允许在即使Mutex拿到的是<em>shared</em>(non-mut)情况下做<em>exclusive</em>(mut)操作.</p></li><li><p>另外一点, Rust的Mutex是不可重入的, 同一个线程连续两次调用<code>lock</code>会引起死锁.</p></li><li><p><strong>Poisoned Mutex</strong>(名字有些夸张, 中毒锁), 是在持有锁的线程崩溃后, Rust会将这个锁标记为中毒污染状态. 后续其它线程对它的<code>lock</code>请求都会返回一个<code>PoisonError</code>. 因此用<code>lock().unwrap()</code>会把panic传播到另一个线程.</p></li></ul><h2 id="Condvar"><a href="#Condvar" class="headerlink" title="Condvar"></a>Condvar</h2><ul><li><p><code>Condvar::notify_all()</code> 和 <code>Condvar::wait()</code> 两个操作;</p></li><li><p>不同的是wait操作有些不寻常</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> !guard.<span class="title function_ invoke__">has_data</span>() &#123;</span><br><span class="line">    guard = <span class="keyword">self</span>.has_data_condvar.<span class="title function_ invoke__">wait</span>(guard).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><code>wait(guard)</code>, 接收一个<code>MutexGuard</code>的所有权, 并返回一个新的<code>MutexGuard</code>. 如果用过pthread接口的话就不会对这个感到陌生. 类似<code>pthread_cond_wait</code>函数, 在wait前需要先释放这个mutex, 然后在返回前重新获取, 可以理解为Mutex授权给wait操作它.</p></li></ul><h2 id="Atomics"><a href="#Atomics" class="headerlink" title="Atomics"></a>Atomics</h2><ul><li>不同于<code>Mutex&lt;T&gt;</code>, <strong>Atomics</strong>拥有最小化开销, 性能成本极低, 通常就是一条load或store指令. 没有任何系统调用.</li></ul><p>All images are copyrighted by original authors <a href="https://twitter.com/jimblandy">Jim Blandy</a> &amp; <a href="https://twitter.com/jorendorff">Jason Orendorff</a> who wrote in the book <a href="http://shop.oreilly.com/product/0636920040385.do"><strong>Programming Rust</strong></a>.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;Thread&quot;&gt;&lt;a href=&quot;#Thread&quot; class=&quot;headerlink&quot; title=&quot;Thread&quot;&gt;&lt;/a&gt;Thread&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;main&lt;/code&gt;函数结束, 则程序退出, 即使仍然有线程在运行;&lt;/li&gt;
+&lt;</summary>
+      
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+    <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="Concurrency" scheme="https://unpluggedcoder.me/tags/Concurrency/"/>
+    
+    <category term="Mutex" scheme="https://unpluggedcoder.me/tags/Mutex/"/>
+    
+    <category term="Channel" scheme="https://unpluggedcoder.me/tags/Channel/"/>
+    
+    <category term="Sync" scheme="https://unpluggedcoder.me/tags/Sync/"/>
+    
+    <category term="Send" scheme="https://unpluggedcoder.me/tags/Send/"/>
+    
+    <category term="Atmoic" scheme="https://unpluggedcoder.me/tags/Atmoic/"/>
+    
+    <category term="Condvar" scheme="https://unpluggedcoder.me/tags/Condvar/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Rust入门失败之Read&amp;Write</title>
+    <link href="https://unpluggedcoder.me/2019/12/11/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BRead&amp;Write/"/>
+    <id>https://unpluggedcoder.me/2019/12/11/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BRead&amp;Write/</id>
+    <published>2019-12-10T17:00:20.000Z</published>
+    <updated>2022-09-15T15:51:05.349Z</updated>
+    
+    <content type="html"><![CDATA[<p>Rust <code>std::io</code>的核心是<code>Read</code>和<code>Write</code>两个trait.</p><h1 id="Readers"><a href="#Readers" class="headerlink" title="Readers"></a>Readers</h1><ul><li><p><code>std::io::Read</code>的所有方法都是<code>&amp;mut self</code>, 也就是必须拥有对象的<em>mut</em> reference.</p></li><li><p><code>read</code>方法, 函数原型:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">read</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, buf: &amp;<span class="keyword">mut</span> [<span class="type">u8</span>]) <span class="punctuation">-&gt;</span> <span class="type">Result</span>&lt;<span class="type">usize</span>&gt;</span><br></pre></td></tr></table></figure><ul><li>从对象里读取最长不超过<code>buf.len()</code>长度的字节数据.</li><li>如果返回0, 有两种可能: <ul><li>一是可能到达了EOF(End Of File), 这个对象不会再有任何数据可读;</li><li>二是buf长度为0.</li></ul></li><li>这个函数不能依赖buf中任何原有的数据, 但也不保证函数调用后buf的内容会是什么. 实现时建议正常点, 写入buf就好.</li><li>buf需要提前初始化, 否则<em>undefined behavior</em>.</li></ul></li><li><p>还有其它的一些read函数:</p><ul><li><code>read_to_end</code>: 一直读到EOF为止, 最好不要调用不信任的Reader的这个方法, 比如网络数据.</li><li><code>read_to_string</code>: 读到<code>&amp;mut string</code>参数中, 前提条件要是有效的UTF-8字符, 否则会报错.</li><li><code>read_exact</code>: 读指定长度, 如果数据提前结尾, 那么会报错.</li></ul></li><li><p><code>BufRead</code>是带缓冲区的Reader, 类似fread(fread一次会预读一个<em>blocksize</em>大小的数据块). BufRead也是类似, 它提供了一个read_line函数, 读取一行, 而实际内部调用了read, 可能预读了8k的大小, 足够满足后面几百次的read_line调用请求.</p><p><img src="/images/BufRead.png" alt="Screen Shot 2019-11-28 at 00.55.56"></p></li><li><p>从<code>stdin</code>读取. 在C中, 如果多个线程同时从stdin中读数据会造成未定义的行为. 标准的做法是加锁. Rust也是一样, 唯一的区别是加锁这个动作是Rust API自带提供的.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">stdin</span> = io::<span class="title function_ invoke__">stdin</span>();</span><br><span class="line"><span class="keyword">for</span> <span class="variable">line</span> <span class="keyword">in</span> stdin.<span class="title function_ invoke__">lock</span>().<span class="title function_ invoke__">lines</span>() &#123;</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, line);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>从文件读取. <code>File::open</code>默认返回的<code>File</code>对象只实现了<code>Read</code> trait, 不带<code>BufRead</code> trait. 因此需要手动创建一个<code>BufReader</code> struct.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::io::BufReader;</span><br><span class="line"><span class="keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">f</span> = File::<span class="title function_ invoke__">open</span>(<span class="string">&quot;log.txt&quot;</span>)?;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">reader</span> = BufReader::<span class="title function_ invoke__">new</span>(f);</span><br><span class="line"><span class="comment">// Or with_capacity</span></span><br><span class="line"><span class="comment">// let reader = BufReader::with_capacity(10, f);</span></span><br></pre></td></tr></table></figure></li></ul><h1 id="Writers"><a href="#Writers" class="headerlink" title="Writers"></a>Writers</h1><ul><li>和Read类似, 实现<code>Write</code> trait, 有三个主要的方法: <code>write</code>, <code>write_all</code>, <code>flush</code>.</li><li>同样也有<code>BufWriter</code>, 如果<code>BufWriter</code>对象被drop, 那么缓冲区内所有的数据会被写入底层的writer中. 如果这时候写入有错误的话会被忽略.</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Rust &lt;code&gt;std::io&lt;/code&gt;的核心是&lt;code&gt;Read&lt;/code&gt;和&lt;code&gt;Write&lt;/code&gt;两个trait.&lt;/p&gt;
+&lt;h1 id=&quot;Readers&quot;&gt;&lt;a href=&quot;#Readers&quot; class=&quot;headerlink&quot; titl</summary>
+      
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+    <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="Read" scheme="https://unpluggedcoder.me/tags/Read/"/>
+    
+    <category term="BufRead" scheme="https://unpluggedcoder.me/tags/BufRead/"/>
+    
+    <category term="Write" scheme="https://unpluggedcoder.me/tags/Write/"/>
+    
+    <category term="BufWrite" scheme="https://unpluggedcoder.me/tags/BufWrite/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2018-2019</title>
+    <link href="https://unpluggedcoder.me/2019/11/21/2018-2019/"/>
+    <id>https://unpluggedcoder.me/2019/11/21/2018-2019/</id>
+    <published>2019-11-20T17:29:03.000Z</published>
+    <updated>2022-09-15T15:51:05.341Z</updated>
+    
+    <content type="html"><![CDATA[<p>2018年11月到2019年11月, 刚好一年了. 这一年变化很大, 各种变化. 以至于想写一些自己的思考.</p><p>15年到18年这四年的文章数量很少, 且呈逐年递减趋势. 但这四年里发生了很多. 后面做了一段时间Python的工作, 学了很多Python的fancy stuffs. 当时的感觉可以用下面的漫画描述:</p><p><img src="/images/python.png" alt="Python"></p><span id="more"></span><p>没错, 就是飞起来的感觉. 做为一个多年的C&#x2F;C++开发者, 完全被Python解放了似的. 看完了几本Python书和鲶鱼书《Learning Spark: Lightning-Fast Big Data Analysis》后, 做大数据处理、可视化、Web等等各种场景张手就来, 感觉Python要火. 按现在国内的Python状况, 算是猜中了一半. 大家都说这几年Python火主要是因为机器学习带起了节奏, 我觉得估计还是要归功于“我靠这门大数据涨薪课年入百万”的营销手段, 有点扯远了. 这四年里还学了Angular、TypeScript、JavaScript, 这里的学不是看看教程, 而是每种语言都看了一本书. 但是又感觉什么都没学到. 不是前端的料.</p><p>不仅如此, 总感觉少了点什么, 只感觉到一个字: <strong>杂</strong>. 一年前的这时候想明白了: <strong>少了沉淀</strong>.</p><p>一年前开始进入995的生活. 和之前的节奏完全是从天上到地下, 整个低落的状态持续了一个多月吧. 由于自己之前有的健身习惯, 所以觉得就算再没时间, 也不能放弃健身. 不能让自己生活中为数不多的多巴胺消失. 渐渐地开始找到自己的节奏, 开始管理自己的时间, 开始看书. 🤭成为更好的自己……</p><p>说来也有点不可思议, 一年看了20几本书, 比四年前的状态还多. 只不过四年前看的基本全是技术类书籍. 而现在完全不一样. 如何保持独立思考? 如何坚持学习? 是否清楚自己想要什么? 很可惜这些问题在我这么多年的受教育生涯中没有悟出来.</p><p><img src="/images/IMG_1840.png" alt="IMG_1840"></p><p>上面是这一年看的书单. 主要分为几类:</p><ul><li><p><strong>金融类书籍</strong>: 或许对这类书籍的好奇可以从书单的标题里找到答案. 我对这个控制了社会各个方面的专业几乎一无所知. 说来也巧, 我所处的同样也是充斥在现代社会各个角落里的一个专业: IT信息行业. 因此我觉得有必要好好了解一下这个“同类”, 毕竟它的历史比二进制bit的历史要久得多. 有一次逛书城, 看到推荐书架上《战胜一切市场的人》和《原则》两本放在一起, 才发现, 我槽, 这两本书原来这么厚.</p></li><li><p><strong>育儿类书籍</strong>: 《夏山学校》、《非暴力沟通》和《游戏力》这三本我觉得都很好, 给我的感受都很强烈. 第一次当父母, 不懂得怎么去体会孩子的需求, 不懂得怎么去处理复杂的情况, 更不懂怎么去管理自己的情绪, 却想控制孩子的情绪. 毕竟当父母都不需要考试……</p></li><li><p><strong>技术类书籍</strong>: 开始入坑Rust, 入门失败一次了. 至于专业的方向, 在没沉淀之前还是不立flag了, 省去了将来被再次打脸的可能. 另外, 目前在做性能工程(Performance Engineering)方面的工作, 是自己钟意的一个坑.</p></li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;2018年11月到2019年11月, 刚好一年了. 这一年变化很大, 各种变化. 以至于想写一些自己的思考.&lt;/p&gt;
+&lt;p&gt;15年到18年这四年的文章数量很少, 且呈逐年递减趋势. 但这四年里发生了很多. 后面做了一段时间Python的工作, 学了很多Python的fancy stuffs. 当时的感觉可以用下面的漫画描述:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/python.png&quot; alt=&quot;Python&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="杂项" scheme="https://unpluggedcoder.me/categories/%E6%9D%82%E9%A1%B9/"/>
+    
+    
+    <category term="Talk" scheme="https://unpluggedcoder.me/tags/Talk/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Rust入门失败之String and str</title>
+    <link href="https://unpluggedcoder.me/2019/11/13/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BString%20and%20str/"/>
+    <id>https://unpluggedcoder.me/2019/11/13/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BString%20and%20str/</id>
+    <published>2019-11-12T16:20:30.000Z</published>
+    <updated>2022-09-15T15:51:05.349Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li><p>所有<code>String</code>和<code>str</code>类型都保证内部持有正确的<code>UTF-8</code>格式字符串. 所有的safe操作都保证这一点, 即不会引入错误格式的<code>UTF-8</code></p></li><li><p><code>String</code>的内部实现其实就是<code>Vec&lt;u8&gt;</code></p></li><li><p><code>str</code>则是borrow的<code>String</code>引用. <code>&amp;str</code>不能<code>Clone</code>, 因为<code>clone(&amp;T)</code>方法需要一个返回<strong>T</strong>对象, 而<code>str</code>又是<code>unsized</code>的. 可以通过<code>slice.to_owned()</code>获取一份重新分配的拷贝.</p></li><li><p><code>String::new()</code>返回的是一个空的字符串, 还没有分配任何堆上的内存.</p></li><li><p>不能通过单个下标访问slice的某个字符(<code>slice[i]</code>), 因为UTF-8的字符是不定长的. 可以通过<code>chars()</code>方法返回字符的迭代器:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">let</span> <span class="variable">parenthesized</span> = <span class="string">&quot;Rust (饂)&quot;</span>;</span><br><span class="line"><span class="built_in">assert_eq!</span>(parenthesized[<span class="number">6</span>..].<span class="title function_ invoke__">chars</span>().<span class="title function_ invoke__">next</span>(), <span class="title function_ invoke__">Some</span>(<span class="string">&#x27;饂&#x27;</span>));</span><br></pre></td></tr></table></figure></li><li><p><code>String</code>实现了<code>Add&lt;&amp;str&gt;</code> 和 <code>AddAssign&lt;&amp;str&gt;</code>的Trait, 因此可以很自然地用<code>+</code>拼接字符串. 但是有两点要注意:</p><ul><li><p>左边的操作符不能是<code>&amp;str</code>, 一定要是一个String对象. 因为会<em>consume</em>这个对象, 获取其所有权, 且会重复利用它的buffer, 如果<em>capacity</em>足够大, 就不需要额外再开辟内存.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">string</span> = <span class="string">&quot;partners&quot;</span>.<span class="title function_ invoke__">to_string</span>();</span><br><span class="line"><span class="comment">// 不能这样写</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">parenthetical</span> = <span class="string">&quot;(&quot;</span> + string + <span class="string">&quot;)&quot;</span>;</span><br><span class="line"><span class="comment">// 需要转为String</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">parenthetical</span> = <span class="string">&quot;(&quot;</span>.<span class="title function_ invoke__">to_string</span>() + string + <span class="string">&quot;)&quot;</span>;</span><br></pre></td></tr></table></figure></li><li><p>对右边的操作符只是<em>borrow</em>, 也就意味着它的内容会被拷贝到前者的buffer末尾.</p></li></ul></li><li><p><code>String</code>转成其它类型需要实现<code>std::str::FromStr</code> Trait. 所有的基础类型都实现了这个Trait.</p></li><li><p>其它类型转成<code>String</code>有三种方法:</p><ul><li>实现<code>std::fmt::Display</code> trait. 所有的机器数字类型都实现了这个trait, 可以直接显示. 而像<code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, <code>Arc&lt;T&gt;</code> 这类智能指针类型, 只有<strong>T</strong>实现了Display trait, 这个类型才能Dispaly.</li><li>实现<code>std::str::ToString</code> trait.如果实现了上面的Display trait, 那么Rust自动帮我们实现这个trait.</li><li>实现<code>std::fmt::Debug</code> trait. 所有标准库可访问的pub 类型都实现了这个方法. 通常如果我们是库的开发者, 对外部开放的类型也都应该实现这个trait, 方便他人打印调试.</li></ul></li><li><p>如果做数据压缩之类的, 需要访问字符串内部字节数据有两种方法:</p><ul><li><p><code>slice.as_bytes()</code>: borrow其内部的<code>Vec</code>, 返回<code>&amp;[u8]</code>. <em>immutable</em>, 且需要注意生命周期.</p></li><li><p><code>string.into_bytes()</code>: 这个成本比较低, 直接consume这个<code>String</code>对象, 把内部的<code>Vec&lt;u8&gt;</code>交出来返回, 没有任何多余的成本.</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pub fn into_bytes(self) -&gt; Vec&lt;u8&gt; &#123;</span><br><span class="line">    self.vec</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul></li><li><p>同样从原始的字节也可以构造<code>String</code>, 有下面几种方法, 但是都要注意错误检查:</p><ul><li><code>std::str::from_utf8(v: &amp;[u8]) -&gt; Result&lt;&amp;str, Utf8Error&gt;</code>: 从这里可以看到, 一是会做错误检查, 如果不是有效的<code>UTF-8</code>格式字节, 则会返回<code>Err</code>; 二是, 返回的<code>&amp;str</code>和<code>&amp;[u8]</code>有同样的生命周期.</li><li><code>String::from_utf8(vec: Vec&lt;u8&gt;) -&gt; Result</code>: 一, 同样做错误检查; 二, 参数直接捕获Vec所有权, 并把它的buffer做为String内部buffer, 省去了开辟, 非常高效;</li></ul></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;所有&lt;code&gt;String&lt;/code&gt;和&lt;code&gt;str&lt;/code&gt;类型都保证内部持有正确的&lt;code&gt;UTF-8&lt;/code&gt;格式字符串. 所有的safe操作都保证这一点, 即不会引入错误格式的&lt;code&gt;UTF-8&lt;/code&gt;&lt;/p&gt;
+&lt;/l</summary>
+      
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+    <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="String" scheme="https://unpluggedcoder.me/tags/String/"/>
+    
+    <category term="str" scheme="https://unpluggedcoder.me/tags/str/"/>
+    
+    <category term="slice" scheme="https://unpluggedcoder.me/tags/slice/"/>
+    
+    <category term="FromStr" scheme="https://unpluggedcoder.me/tags/FromStr/"/>
+    
+    <category term="ToString" scheme="https://unpluggedcoder.me/tags/ToString/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Rust入门失败之Collections</title>
+    <link href="https://unpluggedcoder.me/2019/11/09/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BCollections/"/>
+    <id>https://unpluggedcoder.me/2019/11/09/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BCollections/</id>
+    <published>2019-11-08T16:50:30.000Z</published>
+    <updated>2022-09-15T15:51:05.347Z</updated>
+    
+    <content type="html"><![CDATA[<p>Rust容器和其它语言不同之处:</p><ul><li>到处都是<code>move</code>和<code>borrow</code>, Rust用<code>move</code>来避免深拷贝. 也就是说对不能实现Copy的类型(管理堆或其它额外资源的类型)Rust插入到容器里是非常快的.</li><li>Rust容器里不存在无效值错误(<em>invalidation error</em>).</li><li>Rust没有<code>null</code>类型</li></ul><h1 id="Vec-lt-T-gt"><a href="#Vec-lt-T-gt" class="headerlink" title="Vec&lt;T&gt;"></a>Vec&lt;T&gt;</h1><ul><li><p>包含长度(<em>length</em>), 容量(<em>capacity</em>)和一个指向堆上分配的内存的指针(<em>buffer</em>). 例如下面代码:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create an empty vector</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">numbers</span>: <span class="type">Vec</span>&lt;<span class="type">i32</span>&gt; = <span class="built_in">vec!</span>[];</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a vector with given contents</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">words</span> = <span class="built_in">vec!</span>[<span class="string">&quot;step&quot;</span>, <span class="string">&quot;on&quot;</span>, <span class="string">&quot;no&quot;</span>, <span class="string">&quot;pets&quot;</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">buffer</span> = <span class="built_in">vec!</span>[<span class="number">0u8</span>; <span class="number">1024</span>];  <span class="comment">// 1024 zeroed-out bytes</span></span><br></pre></td></tr></table></figure><p>上面的三个Vec在内存里布局如下:</p><p><img src="/images/Vec%3CT%3E.png" alt="Vec&lt;T&gt;"></p></li><li><p>大部分操作都返回的是<em>reference</em>, 因为如果返回类似是T意味着move所有权. 但是, 有一个例外: 就是如果所有元素都可以<code>Copy</code>的话, 那么这些函数返回的是一份栈上的拷贝, 比如整型. 而<code>to_vec()</code>这个方法也只能作用在<code>T</code>可以<code>Copy</code>的数组上.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">v</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>];</span><br><span class="line"><span class="built_in">assert_eq!</span>(v.<span class="title function_ invoke__">to_vec</span>(),</span><br><span class="line">           <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]);</span><br><span class="line"><span class="built_in">assert_eq!</span>(v[<span class="number">0</span>..<span class="number">6</span>].<span class="title function_ invoke__">to_vec</span>(),</span><br><span class="line">           <span class="built_in">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]);</span><br></pre></td></tr></table></figure></li></ul><p><code>Vec&lt;T&gt;</code>的详细方法以及其它容器的使用说明这里就不过多介绍, 可以参考官网. 这里再说说一些容器的性能方面选择.</p><h1 id="Performance-of-Collections"><a href="#Performance-of-Collections" class="headerlink" title="Performance of Collections"></a>Performance of Collections</h1><ul><li><p>如果遍历<code>Vec</code>容器, 从C++尤其是C语言转过来的开发者会偏向使用下标的形式访问元素内容:</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">arr</span> = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;f&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..arr.<span class="title function_ invoke__">len</span>() &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, arr[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这么干有两点问题:</p><ul><li>这样在热点代码中很伤害性能, 因为Rust对Vec的下标访问都要做有效性判断.</li><li>如果这个手写下标<code>i</code>超出范围, 那么Rust程序就直接<em>panic</em>崩了.</li></ul><p>推荐的做法是用之前将的<code>Iterator</code>. 这样Rust会调用<code>next</code>方法一直跑下去, 直到返回<code>None</code>. 并且Rust会将这个代码转换成和手写C&#x2F;C++同样性能的代码, 没有额外成本.</p><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">arr</span> = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>, <span class="string">&#x27;d&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;f&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="variable">c</span> <span class="keyword">in</span> &amp;arr &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>和C&#x2F;C++一样, 遍历上<code>Vec&lt;T&gt;</code>性能最快, 充分利用<em>Cache-line</em>.</p></li><li><p><code>LinkedList&lt;T&gt;</code>是双端列表, 头尾插入、删除快, 但是访问慢, 如果只关心头尾访问速度应该选择<code>VecDeque&lt;T&gt;</code>, 和<code>Vec&lt;T&gt;</code>一样的实现的双端队列. 相比之下, <code>LinkedList&lt;T&gt;</code>唯一的优势就是合并两个List的时候速度很快.</p></li><li><p>Map方面有<code>HashMap&lt;K, V&gt;</code>和<code>BTreeMap&lt;K, V&gt;</code>.</p><ul><li>前者采用<a href="https://en.wikipedia.org/wiki/SipHash"><em>SipHash 1-3</em></a>散列算法(我当前版本Rust1.38), 主要预防*<a href="https://www.crossmatch.com/glossary/hash-dos-attack/">HashDoS attacks</a>*, 但哈希表的实现采用的是Google的<a href="https://abseil.io/blog/20180927-swisstables"><em>SwissTable</em></a>, 速度刁刁的, 查找复杂度<code>O(1)</code>.</li><li>后者元素有序, 采用B-Tree, 相比平衡二叉树有更好的局部性(<code>locality</code>), Cache友好, 速度快. 查找复杂度<code>O(lgN)</code>.</li></ul></li><li><p>Set方面也有对应的<code>HashSet&lt;T&gt;</code>和<code>BTreeSet&lt;T&gt;</code>.</p></li><li><p>用<code>Vec</code>, <code>HashMap</code>和<code>HashSet</code>足以cover绝大部分场景性能.</p></li></ul><p>All images are copyrighted by original authors <a href="https://twitter.com/jimblandy">Jim Blandy</a> &amp; <a href="https://twitter.com/jorendorff">Jason Orendorff</a> who wrote in the book <a href="http://shop.oreilly.com/product/0636920040385.do"><strong>Programming Rust</strong></a>.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Rust容器和其它语言不同之处:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;到处都是&lt;code&gt;move&lt;/code&gt;和&lt;code&gt;borrow&lt;/code&gt;, Rust用&lt;code&gt;move&lt;/code&gt;来避免深拷贝. 也就是说对不能实现Copy的类型(管理堆或其它额外资源的类型)Rus</summary>
+      
+    
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/categories/Rust/"/>
+    
+    <category term="入门失败" scheme="https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/"/>
+    
+    
+    <category term="Rust" scheme="https://unpluggedcoder.me/tags/Rust/"/>
+    
+    <category term="Rust教程" scheme="https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/"/>
+    
+    <category term="Rust笔记" scheme="https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/"/>
+    
+    <category term="Collections" scheme="https://unpluggedcoder.me/tags/Collections/"/>
+    
+    <category term="Vec" scheme="https://unpluggedcoder.me/tags/Vec/"/>
+    
+    <category term="VecDeque" scheme="https://unpluggedcoder.me/tags/VecDeque/"/>
+    
+    <category term="HashMap" scheme="https://unpluggedcoder.me/tags/HashMap/"/>
+    
+    <category term="HashSet" scheme="https://unpluggedcoder.me/tags/HashSet/"/>
+    
+    <category term="BTreeMap" scheme="https://unpluggedcoder.me/tags/BTreeMap/"/>
+    
+    <category term="BTreeSet" scheme="https://unpluggedcoder.me/tags/BTreeSet/"/>
+    
+    <category term="Performance" scheme="https://unpluggedcoder.me/tags/Performance/"/>
+    
+  </entry>
+  
+</feed>
