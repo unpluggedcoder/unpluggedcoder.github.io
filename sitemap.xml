@@ -1910,6 +1910,27 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://unpluggedcoder.me/tags/FILCO/</loc>
+    <lastmod>2022-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/tags/Minila/</loc>
+    <lastmod>2022-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/tags/Mechanical-Keyboard/</loc>
+    <lastmod>2022-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
