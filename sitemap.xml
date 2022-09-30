@@ -2,6 +2,150 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://unpluggedcoder.me/2022/09/30/FILCO-MINILA-R-Convertible-Review/</loc>
+    
+    <lastmod>2022-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2013/09/02/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%B0%9D%E8%AF%95/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2016/01/13/For%20%E5%B8%95%E5%B0%94%E5%93%88%E6%8F%90/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2013/11/01/finished-a-painting-of-lion/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2012/12/31/%E4%B8%91%E7%94%BB%E8%A6%81%E6%94%BE%E5%9C%A8%E5%89%8D%E9%9D%A2/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/03/16/%E5%9B%BE%E8%AF%B4%E9%87%91%E8%9E%8D%E5%8F%B2/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/04/20/RustHighPerformance/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/04/20/Algorithms%20Illuminated,%20Part%201/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2019/06/02/5%E5%88%86%E9%92%9F%E8%AF%BB%E6%87%82%E3%80%8A%E5%AF%8C%E4%BA%BA%E6%80%9D%E7%BB%B4%E3%80%8B/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/04/20/%E5%A5%88%E9%A3%9E%E6%96%87%E5%8C%96%E6%89%8B%E5%86%8C/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/04/20/%E7%81%B0%E7%8A%80%E7%89%9B/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/02/18/RustTools/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/02/01/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%EF%BC%9A%E5%9F%BA%E4%BA%8EPython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/02/01/%E5%B0%8F%E7%8B%97%E9%92%B1%E9%92%B1/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/01/28/%E5%AF%B9%E5%86%B2/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://unpluggedcoder.me/2020/01/20/%E7%88%B1%E3%80%81%E9%87%91%E9%92%B1%E5%92%8C%E5%AD%A9%E5%AD%90%EF%BC%9A%E8%82%B2%E5%84%BF%E7%BB%8F%E6%B5%8E%E5%AD%A6/</loc>
+    
+    <lastmod>2022-09-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://unpluggedcoder.me/repository/index.html</loc>
     
     <lastmod>2022-09-15</lastmod>
@@ -38,42 +182,6 @@
   </url>
   
   <url>
-    <loc>https://unpluggedcoder.me/2020/02/01/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%EF%BC%9A%E5%9F%BA%E4%BA%8EPython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/01/20/%E7%88%B1%E3%80%81%E9%87%91%E9%92%B1%E5%92%8C%E5%AD%A9%E5%AD%90%EF%BC%9A%E8%82%B2%E5%84%BF%E7%BB%8F%E6%B5%8E%E5%AD%A6/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2013/09/02/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%B0%9D%E8%AF%95/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/04/20/%E7%81%B0%E7%8A%80%E7%89%9B/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://unpluggedcoder.me/2015/07/08/%E8%AE%BE%E7%BD%AEXFS%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9FQuota/</loc>
     
     <lastmod>2022-09-15</lastmod>
@@ -101,15 +209,6 @@
   </url>
   
   <url>
-    <loc>https://unpluggedcoder.me/2020/03/16/%E5%9B%BE%E8%AF%B4%E9%87%91%E8%9E%8D%E5%8F%B2/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://unpluggedcoder.me/2014/11/07/%E5%9C%A8Linux%20x64%E7%8E%AF%E5%A2%83%E4%B8%8Bgcc%E7%BC%96%E8%AF%9132%E4%BD%8D%E7%A8%8B%E5%BA%8F%E5%8F%8ALibrary/</loc>
     
     <lastmod>2022-09-15</lastmod>
@@ -120,33 +219,6 @@
   
   <url>
     <loc>https://unpluggedcoder.me/2015/01/29/%E5%9C%A8Linux(CentOS)%E4%B8%8A%E5%BC%80%E5%90%AF%E5%B0%8F%E5%BA%A6WIFI%E6%97%A0%E7%BA%BFAP%E6%A8%A1%E5%BC%8F/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/04/20/%E5%A5%88%E9%A3%9E%E6%96%87%E5%8C%96%E6%89%8B%E5%86%8C/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/01/28/%E5%AF%B9%E5%86%B2/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/02/01/%E5%B0%8F%E7%8B%97%E9%92%B1%E9%92%B1/</loc>
     
     <lastmod>2022-09-15</lastmod>
     
@@ -174,15 +246,6 @@
   
   <url>
     <loc>https://unpluggedcoder.me/2017/11/05/ssh-remote-forward-for-resilio-sync/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2012/12/31/%E4%B8%91%E7%94%BB%E8%A6%81%E6%94%BE%E5%9C%A8%E5%89%8D%E9%9D%A2/</loc>
     
     <lastmod>2022-09-15</lastmod>
     
@@ -219,15 +282,6 @@
   
   <url>
     <loc>https://unpluggedcoder.me/2017/09/14/%E5%88%9B%E5%BB%BADjango-Rest-Framework%E7%9A%84%E6%96%B9%E6%B3%95%E5%BA%8F%E5%88%97%E5%8C%96%E8%A7%86%E5%9B%BE/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2013/11/01/finished-a-painting-of-lion/</loc>
     
     <lastmod>2022-09-15</lastmod>
     
@@ -524,24 +578,6 @@
   </url>
   
   <url>
-    <loc>https://unpluggedcoder.me/2020/04/20/RustHighPerformance/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/02/18/RustTools/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://unpluggedcoder.me/2014/08/05/Jabberd2%20%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E5%8F%8A%E8%B0%83%E8%AF%95/</loc>
     
     <lastmod>2022-09-15</lastmod>
@@ -606,15 +642,6 @@
   
   <url>
     <loc>https://unpluggedcoder.me/2013/01/17/C++%E4%BA%8B%E4%BB%B6%E5%A7%94%E6%89%98%E2%80%94%E2%80%94%E5%9C%A8Poco%20C++%20Libraries%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E9%97%B2%E7%9D%80%E6%97%A0%E8%81%8A%EF%BC%8C%E8%A7%A3%E6%9E%90%E4%B8%8B%E6%BA%90%E7%A0%81%EF%BC%89/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2016/01/13/For%20%E5%B8%95%E5%B0%94%E5%93%88%E6%8F%90/</loc>
     
     <lastmod>2022-09-15</lastmod>
     
@@ -713,15 +740,6 @@
   </url>
   
   <url>
-    <loc>https://unpluggedcoder.me/2019/06/02/5%E5%88%86%E9%92%9F%E8%AF%BB%E6%87%82%E3%80%8A%E5%AF%8C%E4%BA%BA%E6%80%9D%E7%BB%B4%E3%80%8B/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://unpluggedcoder.me/2014/11/09/64%E4%BD%8DLinux%E4%B8%8B%E7%BC%96%E8%AF%91x86%E7%89%88%E6%9C%ACBoost%E5%BA%93%20(%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%BA%93%E7%9A%84%E7%BC%96%E8%AF%91)/</loc>
     
     <lastmod>2022-09-15</lastmod>
@@ -732,15 +750,6 @@
   
   <url>
     <loc>https://unpluggedcoder.me/2015/01/27/ATL%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%BC%96%E5%86%99Windows%E6%9C%8D%E5%8A%A1/</loc>
-    
-    <lastmod>2022-09-15</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://unpluggedcoder.me/2020/04/20/Algorithms%20Illuminated,%20Part%201/</loc>
     
     <lastmod>2022-09-15</lastmod>
     
@@ -796,7 +805,7 @@
 
   <url>
     <loc>https://unpluggedcoder.me/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -804,1099 +813,1099 @@
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Talk/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Poco/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/C-C/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/GCC/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E5%AF%8C%E4%BA%BA%E6%80%9D%E7%BB%B4/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/ATL/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Windows/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/C/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Algorithm/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/asynchronous/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/logging/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Python/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Celery/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E5%B9%B6%E5%8F%91/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/C-11/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/auto-ptr/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/shared-ptr/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/SmartPointer/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/unique-ptr/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/weak-ptr/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Poco-C/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E4%BA%8B%E4%BB%B6/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E5%A7%94%E6%89%98/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%B4%A0%E6%8F%8F/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/jabberd2/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/xmpp/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Mac/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/pip/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%88%AC%E8%99%AB/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/MySQLdb/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Django/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Rust/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Productivity-tools/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/ripgrep/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/lsd/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/broot/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/starship/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/procs/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/dua-cli/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/dust/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/dutree/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/inferno/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/dtool/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/ytop/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/bat/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/tui-rs/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Rust%E6%95%99%E7%A8%8B/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Rust%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Closure/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Fn/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/FnMut/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/FnOnce/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Callback/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Collections/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Vec/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/VecDeque/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/HashMap/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/HashSet/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/BTreeMap/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/BTreeSet/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Performance/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Concurrency/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Mutex/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Channel/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Sync/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Send/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Atmoic/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Condvar/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Crates/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Modules/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/pub/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/doc-tests/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/cargo/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Enum/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Pattern/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/PatternGuard/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/refutable/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/irrefutable/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Error-Handling/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Result/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/painc/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Option/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Iterator/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Adapter/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/map/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/filter/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/IntoIterator/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/into-iter/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/drain/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Macros/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Read/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/BufRead/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Write/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/BufWrite/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/String/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/str/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/slice/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/FromStr/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/ToString/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Ownership/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Reference/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Shared-Reference/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Struct/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Cell-T/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/RefCell-T/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Box/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Rc/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Arc/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Trait/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Generics/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%89%B9%E8%B4%A8/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E6%B3%9B%E5%9E%8B/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Copy/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Clone/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Drop/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Sized/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/AsRef/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Borrow/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/ToOwned/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Cow/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/From/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Into/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Compression/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E6%80%A7%E8%83%BD/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/c/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/MVVM/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/WPF/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Drum/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Data-Visualization/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/ModeAnalytics/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/RDS/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/SQL/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/SSH/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Resilio-Sync/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/BT-Sync/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Aliyun/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/AWS/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/DataPipeline/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/RedShift/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Distribution-Lock/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Redis/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Django-Rest-Framework/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E9%87%91%E8%9E%8D%E5%AD%A6/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Linux/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E5%B0%8F%E5%BA%A6WIFI/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E9%A3%8E%E9%99%A9/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%BB%8F%E6%B5%8E%E5%AD%A6/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E8%82%B2%E5%84%BF/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E7%90%86%E8%B4%A2/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/exception/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/%E4%BD%8E%E6%99%BA%E5%95%86%E7%A4%BE%E4%BC%9A/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Deep-Learning/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/quota/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/tags/Unix-Linux/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -1905,98 +1914,98 @@
   
   <url>
     <loc>https://unpluggedcoder.me/categories/%E6%9D%82%E9%A1%B9/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/%E4%B9%A6/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/C-C/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/Windows/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/Python/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/C-C/%E6%9D%82%E9%A1%B9/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/%E6%B6%82%E9%B8%A6/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/Rust/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/Rust/Flamegraph/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/Rust/%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/DrumCover/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/%E6%95%B0%E6%8D%AE%E7%9B%B8%E5%85%B3/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/AWS/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://unpluggedcoder.me/categories/Unix-Linux/</loc>
-    <lastmod>2022-09-19</lastmod>
+    <lastmod>2022-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
