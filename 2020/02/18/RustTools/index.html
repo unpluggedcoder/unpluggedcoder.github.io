@@ -1,1 +1,538 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui"><meta name="renderer" content="webkit"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="format-detection" content="telephone=no,email=no,adress=no"><meta name="theme-color" content="#000000"><meta http-equiv="window-target" content="_top"><title>那些由Rust打造的高效生产力工具(Updated on 2020-2-25) | 不插电码农</title><meta name="description" content="最近沉迷于一批Rust编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅."><meta property="og:type" content="article"><meta property="og:title" content="那些由Rust打造的高效生产力工具(Updated on 2020-2-25)"><meta property="og:url" content="https://unpluggedcoder.me/2020/02/18/RustTools/index.html"><meta property="og:site_name" content="不插电码农"><meta property="og:description" content="最近沉迷于一批Rust编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅."><meta property="og:locale" content="en_US"><meta property="og:image" content="https://unpluggedcoder.me/images/rust_tool.jpg"><meta property="og:image" content="https://unpluggedcoder.me/images/inferno.jpeg"><meta property="og:image" content="https://unpluggedcoder.me/images/broot.png"><meta property="og:image" content="https://camo.githubusercontent.com/03f7bfbeeef933e2f2aef1e51cace155216b1d8f/68747470733a2f2f61736369696e656d612e6f72672f612f4161465530665045324536313258436a704e67394a654167582e737667"><meta property="og:image" content="https://github.com/bootandy/dust/raw/master/media/snap.png"><meta property="og:image" content="https://github.com/nachoparker/dutree/raw/master/resources/dutree_featured.png"><meta property="og:image" content="https://github.com/sharkdp/bat/raw/master/doc/logo-header.svg?sanitize=true"><meta property="og:image" content="https://unpluggedcoder.me/images/bat1.png"><meta property="og:image" content="https://unpluggedcoder.me/images/bat2.png"><meta property="og:image" content="https://github.com/sharkdp/hexyl/raw/master/doc/logo.svg?sanitize=true"><meta property="og:image" content="https://unpluggedcoder.me/images/hexyl.png"><meta property="og:image" content="https://unpluggedcoder.me/images/ytop.gif"><meta property="og:image" content="https://unpluggedcoder.me/images/procs1.png"><meta property="og:image" content="https://unpluggedcoder.me/images/procs2.png"><meta property="og:image" content="https://unpluggedcoder.me/images/screen_lsd.png"><meta property="og:image" content="https://raw.githubusercontent.com/starship/starship/master/media/logo.png"><meta property="og:image" content="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif"><meta property="og:image" content="https://github.com/fdehau/tui-rs/raw/master/assets/demo.gif"><meta property="article:published_time" content="2020-02-18T14:36:20.000Z"><meta property="article:modified_time" content="2022-09-20T15:46:38.322Z"><meta property="article:author" content="不插电码农"><meta property="article:tag" content="Rust"><meta property="article:tag" content="Productivity tools"><meta property="article:tag" content="ripgrep"><meta property="article:tag" content="lsd"><meta property="article:tag" content="broot"><meta property="article:tag" content="starship"><meta property="article:tag" content="procs"><meta property="article:tag" content="dua-cli"><meta property="article:tag" content="dust"><meta property="article:tag" content="dutree"><meta property="article:tag" content="inferno"><meta property="article:tag" content="dtool"><meta property="article:tag" content="ytop"><meta property="article:tag" content="bat"><meta property="article:tag" content="tui-rs"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://unpluggedcoder.me/images/rust_tool.jpg"><link rel="canonical" href="https://unpluggedcoder.me/2020/02/18/RustTools/index.html"><link rel="alternate" href="/atom.xml" title="不插电码农" type="application/atom+xml"><link rel="icon" href="/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet"><meta name="generator" content="Hexo 6.3.0"></head><body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="slimContent"><div class="navbar-header"><div class="profile-block text-center"><a id="avatar" href="https://github.com/unpluggedcoder" target="_blank"><img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200"></a><h2 id="name" class="hidden-xs hidden-sm">不插电码农</h2><h3 id="title" class="hidden-xs hidden-sm hidden-md">A coder, love sketch and drumming.</h3><small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Inside the GreatWall</small></div><div class="search" id="search-form-wrap"><form class="search-form sidebar-form"><div class="input-group"><input type="text" class="search-form-input form-control" placeholder="Search"> <span class="input-group-btn"><button type="submit" class="search-form-submit btn btn-flat" onclick="return!1"><i class="icon icon-search"></i></button></span></div></form><div class="ins-search"><div class="ins-search-mask"></div><div class="ins-search-container"><div class="ins-input-wrapper"><input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech> <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div><div class="ins-section-wrapper"><div class="ins-section-container"></div></div></div></div></div><button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button></div><nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation"><ul class="nav navbar-nav main-nav menu-highlight"><li class="menu-item menu-item-home"><a href="/."><i class="icon icon-home-fill"></i> <span class="menu-title">Home</span></a></li><li class="menu-item menu-item-archives"><a href="/archives"><i class="icon icon-archives-fill"></i> <span class="menu-title">Archives</span></a></li><li class="menu-item menu-item-categories"><a href="/categories"><i class="icon icon-folder"></i> <span class="menu-title">Categories</span></a></li><li class="menu-item menu-item-tags"><a href="/tags"><i class="icon icon-tags"></i> <span class="menu-title">Tags</span></a></li><li class="menu-item menu-item-repository"><a href="/repository"><i class="icon icon-project"></i> <span class="menu-title">Repository</span></a></li><li class="menu-item menu-item-about"><a href="/about"><i class="icon icon-cup-fill"></i> <span class="menu-title">About</span></a></li></ul><ul class="social-links"><li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li><li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li><li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li></ul></nav></div></header><main class="main" role="main"><div class="content"><article id="post-RustTools" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting"><div class="article-header"><h1 class="article-title" itemprop="name">那些由Rust打造的高效生产力工具(Updated on 2020-2-25)</h1><div class="article-meta"><span class="article-date"><i class="icon icon-calendar-check"></i> <a href="/2020/02/18/RustTools/" class="article-date"><time datetime="2020-02-18T14:36:20.000Z" itemprop="datePublished">2020-02-18</time> </a></span><span class="article-category"><i class="icon icon-folder"></i> <a class="article-category-link" href="/categories/Rust/">Rust</a> </span><span class="article-tag"><i class="icon icon-tags"></i> <a class="article-tag-link-link" href="/tags/Productivity-tools/" rel="tag">Productivity tools</a>, <a class="article-tag-link-link" href="/tags/Rust/" rel="tag">Rust</a>, <a class="article-tag-link-link" href="/tags/bat/" rel="tag">bat</a>, <a class="article-tag-link-link" href="/tags/broot/" rel="tag">broot</a>, <a class="article-tag-link-link" href="/tags/dtool/" rel="tag">dtool</a>, <a class="article-tag-link-link" href="/tags/dua-cli/" rel="tag">dua-cli</a>, <a class="article-tag-link-link" href="/tags/dust/" rel="tag">dust</a>, <a class="article-tag-link-link" href="/tags/dutree/" rel="tag">dutree</a>, <a class="article-tag-link-link" href="/tags/inferno/" rel="tag">inferno</a>, <a class="article-tag-link-link" href="/tags/lsd/" rel="tag">lsd</a>, <a class="article-tag-link-link" href="/tags/procs/" rel="tag">procs</a>, <a class="article-tag-link-link" href="/tags/ripgrep/" rel="tag">ripgrep</a>, <a class="article-tag-link-link" href="/tags/starship/" rel="tag">starship</a>, <a class="article-tag-link-link" href="/tags/tui-rs/" rel="tag">tui-rs</a>, <a class="article-tag-link-link" href="/tags/ytop/" rel="tag">ytop</a> </span><span class="article-read hidden-xs"><i class="icon icon-eye-fill" aria-hidden="true"></i> <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span> </span></span><span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/02/18/RustTools/#comments" class="article-comment-link">Comments</a></span> <span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.1k(words)</span> <span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4(minutes)</span></div></div><div class="article-entry marked-body" itemprop="articleBody"><p>最近沉迷于一批<a target="_blank" rel="noopener" href="https://www.rust-lang.org/">Rust</a>编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅.</p><span id="more"></span><p><img src="/images/rust_tool.jpg" alt="rust_tool"></p><h1 id="ripgrep"><a href="#ripgrep" class="headerlink" title="ripgrep"></a>ripgrep</h1><p>最刁的应该就是<a target="_blank" rel="noopener" href="https://github.com/BurntSushi/ripgrep">ripgrep</a>了, 名称也起得很调皮: <code>R.I.P grep</code>, 意图很明显了, 就是取代grep的, 且实际性能碾压grep. 作者在他的<a target="_blank" rel="noopener" href="https://blog.burntsushi.net/ripgrep/">文章</a>中列举了很多benchmark. 截取一个感受一下:</p><table><thead><tr><th>Tool</th><th>Command</th><th>Line count</th><th>Time</th></tr></thead><tbody><tr><td>ripgrep</td><td><code>rg -L -u -tc -n -w &#39;[A-Z]+_SUSPEND&#39;</code></td><td>404</td><td><strong>0.079s</strong></td></tr><tr><td><a target="_blank" rel="noopener" href="https://github.com/gvansickle/ucg">ucg</a></td><td><code>ucg --type=cc -w &#39;[A-Z]+_SUSPEND&#39;</code></td><td>390</td><td>0.163s</td></tr><tr><td><a target="_blank" rel="noopener" href="https://www.gnu.org/software/grep/">GNU grep</a></td><td><code>egrep -R -n --include=&#39;*.c&#39; --include=&#39;*.h&#39; -w &#39;[A-Z]+_SUSPEND&#39;</code></td><td>404</td><td>0.611s</td></tr></tbody></table><p>不过, 我用得最多的并不是<code>rg</code>命令, 而是在vim中的<a target="_blank" rel="noopener" href="https://github.com/Yggdroot/LeaderF">LeaderF</a>插件的模糊匹配, 速度也是贼快.</p><h1 id="inferno"><a href="#inferno" class="headerlink" title="inferno"></a>inferno</h1><p><a target="_blank" rel="noopener" href="https://github.com/jonhoo/inferno">inferno</a>这个工具很多人不常用, 但是对我的帮助是最大的. 几乎秒生成🔥火焰图的工具, 和原版<a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">FlameGraph</a>相比, 速度快了18~20倍.</p><p>贴一个作者的benchmark:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">collapse/dtrace/1       time:   [8.2767 ms 8.2817 ms 8.2878 ms]</span><br><span class="line">                        thrpt:  [159.08 MiB/s 159.20 MiB/s 159.29 MiB/s]</span><br><span class="line">collapse/dtrace/12      time:   [3.8631 ms 3.8819 ms 3.9019 ms]</span><br><span class="line">                        thrpt:  [337.89 MiB/s 339.63 MiB/s 341.28 MiB/s]</span><br><span class="line"></span><br><span class="line">collapse/perf/1         time:   [16.386 ms 16.401 ms 16.416 ms]</span><br><span class="line">                        thrpt:  [182.37 MiB/s 182.53 MiB/s 182.70 MiB/s]</span><br><span class="line">collapse/perf/12        time:   [4.8056 ms 4.8254 ms 4.8460 ms]</span><br><span class="line">                        thrpt:  [617.78 MiB/s 620.41 MiB/s 622.97 MiB/s]</span><br><span class="line"></span><br><span class="line">collapse/sample         time:   [8.9132 ms 8.9196 ms 8.9264 ms]</span><br><span class="line">                        thrpt:  [155.49 MiB/s 155.61 MiB/s 155.72 MiB/s]</span><br><span class="line"></span><br><span class="line">flamegraph              time:   [16.071 ms 16.118 ms 16.215 ms]</span><br><span class="line">                        thrpt:  [38.022 MiB/s 38.250 MiB/s 38.363 MiB/s]</span><br></pre></td></tr></table></figure><p>感受一下对比:</p><p><img src="/images/inferno.jpeg" alt="EP1aHvRUcAMjLWG"></p><h1 id="broot"><a href="#broot" class="headerlink" title="broot"></a>broot</h1><p>还在用<code>tree</code>命令吗? 试试<a target="_blank" rel="noopener" href="https://github.com/Canop/broot">broot</a>吧! 交互式的树形结构查找, 一目了然, 关键是毫秒级的查询响应.</p><p><img src="/images/broot.png" alt="broot"></p><h1 id="du"><a href="#du" class="headerlink" title="du"></a>du</h1><h2 id="dua-cli"><a href="#dua-cli" class="headerlink" title="dua-cli"></a>dua-cli</h2><p><a target="_blank" rel="noopener" href="https://github.com/Byron/dua-cli"><strong>dua</strong></a> (-&gt; <em>Disk Usage Analyzer</em>) , 类似<code>du</code>命令, 但是提供交互式的查看方式.</p><p><img src="https://camo.githubusercontent.com/03f7bfbeeef933e2f2aef1e51cace155216b1d8f/68747470733a2f2f61736369696e656d612e6f72672f612f4161465530665045324536313258436a704e67394a654167582e737667" alt="dua-cli"></p><h2 id="dust"><a href="#dust" class="headerlink" title="dust"></a>dust</h2><p>du + rust &#x3D; <a target="_blank" rel="noopener" href="https://github.com/bootandy/dust">dust</a>. 更直观的方式显示du命令. 不过不是常规的树型结构, 而是倒树型.</p><p><img src="https://github.com/bootandy/dust/raw/master/media/snap.png" alt="dust"></p><h2 id="dutree"><a href="#dutree" class="headerlink" title="dutree"></a>dutree</h2><p><a target="_blank" rel="noopener" href="https://github.com/nachoparker/dutree">dutree</a>, <code>du</code>命令+<code>tree</code>命令, 提供 <em>files-only</em> 功能.</p><p><img src="https://github.com/nachoparker/dutree/raw/master/resources/dutree_featured.png" alt="dutree"></p><p>上面三个工具, 由于<code>dua-cli</code>不包含树型等复杂的图形, 所以在统计上速度最快(以<code>--depth 1</code>测试). 各有千秋, 大家可以自选.</p><h1 id="bat"><a href="#bat" class="headerlink" title="bat"></a>bat</h1><p><img src="https://github.com/sharkdp/bat/raw/master/doc/logo-header.svg?sanitize=true" alt="bat"><br>这个<a target="_blank" rel="noopener" href="https://github.com/sharkdp/bat">bat</a>不是我们想的BAT. 目的是取代<code>cat</code>(cat with wings -&gt; bat). 以前一直认为cat就是打印到终端, 用来查看文件而已, 直到看到了bat:</p><p><img src="/images/bat1.png" alt="bat1"></p><p><img src="/images/bat2.png" alt="bat2"></p><p>自动根据文件类型做语法高亮, 好看多了. 还有其它的命令参数, 甚至有一个和<code>ripgrep</code>结合的命令: <code>batgrep</code>, 带高亮地打印前者的输出.</p><h1 id="hexyl"><a href="#hexyl" class="headerlink" title="hexyl"></a>hexyl</h1><p><img src="https://github.com/sharkdp/hexyl/raw/master/doc/logo.svg?sanitize=true" alt="hexyl"></p><p>如果要查看二进制文件内容怎么办? bat只能打印出来告诉你是 &lt;BINARY&gt;. 这时候需要<a target="_blank" rel="noopener" href="https://github.com/sharkdp/hexyl">hexyl</a>, 非常友好的二进制查看工具, 曾经还在苦苦寻找好用GUI工具.</p><p><img src="/images/hexyl.png" alt="hexyl"></p><p>当然还支持很多参数, 自定义查看方式.</p><h1 id="dtool"><a href="#dtool" class="headerlink" title="dtool"></a>dtool</h1><p>除了查看文件内容或者二进制数据外, 我们通常还会计算文件哈希值或者一些其它的文件常见操作, 而<a target="_blank" rel="noopener" href="https://github.com/guoxbin/dtool">dtool</a>这个工具就像一个开发者的小型瑞士军刀, 提供了开发者很多常见命令操作, 如计算哈希值、编码转换等等常见操作.</p><p>convert a string to base64</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo -n abc | dtool s2h | dtool h2b64</span><br><span class="line">YWJj</span><br></pre></td></tr></table></figure><p>convert a encoded timestamp to date</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo -n 2c28e75d | dtool nd -tu32 | dtool ts2d</span><br><span class="line">2019-12-04 11:29:48</span><br></pre></td></tr></table></figure><p>convert a jpeg to base64</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat pic.jpg | dtool b2h | dtool h2b64</span><br><span class="line">/9j/4AAQSkZJR...</span><br></pre></td></tr></table></figure><p>calculate file md5</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat pic.jpg | dtool b2h | dtool hash -a md5</span><br><span class="line">0x1884b72e23b0c93320bac6b050478ff4</span><br></pre></td></tr></table></figure><h1 id="ytop"><a href="#ytop" class="headerlink" title="ytop"></a>ytop</h1><p>常用的<code>htop</code>命令也有一个Rust的版本, 叫<a target="_blank" rel="noopener" href="https://github.com/cjbassi/ytop">ytop</a>, 样子也是很酷炫.</p><p><img src="/images/ytop.gif" alt="ytop"></p><h1 id="procs"><a href="#procs" class="headerlink" title="procs"></a>procs</h1><p>曾经也是各种记ps命令的参数, 后来用<code>htop</code>. 现在有了<a target="_blank" rel="noopener" href="https://github.com/dalance/procs">procs</a>, 功能上虽不如<code>htop</code>丰富, 但是能够查看docker容器的状态.</p><p><img src="/images/procs1.png" alt="procs1"></p><p><img src="/images/procs2.png" alt="procs2"></p><p>后面再分享两个比较fancy的工具.</p><h1 id="lsd"><a href="#lsd" class="headerlink" title="lsd"></a>lsd</h1><p><a target="_blank" rel="noopener" href="https://github.com/Peltoche/lsd">lsd</a>看名称就是替代<code>ls</code>的, 加了各种<em>icon</em>和高亮, 需要安装<code>nerd</code>字体</p><p><img src="/images/screen_lsd.png" alt="screen_lsd"></p><h1 id="starship"><a href="#starship" class="headerlink" title="starship"></a>starship</h1><p><img src="https://raw.githubusercontent.com/starship/starship/master/media/logo.png" alt="starship_logo"></p><p>光看logo和名字就知道很fancy了, 以模块的哲学来定义shell终端展示.</p><p><img src="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif" alt="starship"></p><p>还有另外一个叫<a target="_blank" rel="noopener" href="https://github.com/nushell/nushell">nushell</a>, 用终端制表的方式打印输出, 和上面几个相比就没有高亮了.</p><h1 id="tui-rs"><a href="#tui-rs" class="headerlink" title="tui-rs"></a>tui-rs</h1><p>最后祭出<a target="_blank" rel="noopener" href="https://github.com/fdehau/tui-rs">tui-rs</a>, 是一个Rust的终端GUI library, 提供各种Widget, 可以用来DIY自己的神器. 包括上面的<code>ytop</code>也是基于tui-rs开发的.</p><p><img src="https://github.com/fdehau/tui-rs/raw/master/assets/demo.gif" alt="tui-rs"></p><p>感谢各位作者和Rust, 给大家带来的这些高效工具, 欢迎推荐👏.</p><p>开了一个仓库用来记录和存放：<a target="_blank" rel="noopener" href="https://github.com/unpluggedcoder/awesome-rust-tools%EF%BC%8C%E4%B8%8D%E5%AE%9A%E6%9C%9F%E6%9B%B4%E6%96%B0%E4%B8%AD%E3%80%82">https://github.com/unpluggedcoder/awesome-rust-tools，不定期更新中。</a></p></div><div class="article-footer"></div></article><section id="comments"><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></section></div><nav class="bar bar-footer clearfix" data-stick-bottom><div class="bar-inner"><ul class="pager pull-left"><li class="prev"><a href="/2020/03/16/%E5%9B%BE%E8%AF%B4%E9%87%91%E8%9E%8D%E5%8F%B2/" title="图说金融史"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a></li><li class="next"><a href="/2020/02/15/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BMacros/" title="Rust入门失败之Macros"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a></li></ul><div class="bar-right"></div></div></nav></main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter"><ul class="social-links"><li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li><li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li><li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li></ul><div class="copyright">&copy; 2026 不插电码农<div class="publishby">Theme by <a href="https://github.com/cofess" target="_blank">cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.</div></div></footer><script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script><script>window.jQuery||document.write('<script src="js/jquery.min.js"><\/script>')</script><script src="/js/plugin.min.js"></script><script src="/js/application.js"></script><script>window.INSIGHT_CONFIG={TRANSLATION:{POSTS:"Posts",PAGES:"Pages",CATEGORIES:"Categories",TAGS:"Tags",UNTITLED:"(Untitled)"},ROOT_URL:"/",CONTENT_URL:"/content.json"}</script><script src="/js/insight.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script defer>var disqus_config=function(){this.page.url="https://unpluggedcoder.me/2020/02/18/RustTools/",this.page.identifier="RustTools"};!function(){var e=document,t=e.createElement("script");t.src="//unpluggedcoder.disqus.com/embed.js",t.setAttribute("data-timestamp",+new Date),(e.head||e.body).appendChild(t)}()</script><script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script><script>$(document).ready(function(){$("article img").not("[hidden]").not(".panel-body img").each(function(){var a,t,n=$(this),e=n.attr("alt"),r=n.parent("a");r.length<1&&(-1!=(t=(a=this.getAttribute("src")).lastIndexOf("?"))&&(a=a.substring(0,t)),r=n.wrap('<a href="'+a+'"></a>').parent("a")),r.attr("data-fancybox","images"),e&&r.attr("data-caption",e)}),$().fancybox({selector:'[data-fancybox="images"]',hash:!1,loop:!1})})</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-448E2EFX91"></script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-448E2EFX91")</script></body></html>
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>那些由Rust打造的高效生产力工具(Updated on 2020-2-25) | 不插电码农</title>
+  <meta name="description" content="最近沉迷于一批Rust编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="那些由Rust打造的高效生产力工具(Updated on 2020-2-25)">
+<meta property="og:url" content="https://unpluggedcoder.me/2020/02/18/RustTools/index.html">
+<meta property="og:site_name" content="不插电码农">
+<meta property="og:description" content="最近沉迷于一批Rust编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://unpluggedcoder.me/images/rust_tool.jpg">
+<meta property="og:image" content="https://unpluggedcoder.me/images/inferno.jpeg">
+<meta property="og:image" content="https://unpluggedcoder.me/images/broot.png">
+<meta property="og:image" content="https://camo.githubusercontent.com/03f7bfbeeef933e2f2aef1e51cace155216b1d8f/68747470733a2f2f61736369696e656d612e6f72672f612f4161465530665045324536313258436a704e67394a654167582e737667">
+<meta property="og:image" content="https://github.com/bootandy/dust/raw/master/media/snap.png">
+<meta property="og:image" content="https://github.com/nachoparker/dutree/raw/master/resources/dutree_featured.png">
+<meta property="og:image" content="https://github.com/sharkdp/bat/raw/master/doc/logo-header.svg?sanitize=true">
+<meta property="og:image" content="https://unpluggedcoder.me/images/bat1.png">
+<meta property="og:image" content="https://unpluggedcoder.me/images/bat2.png">
+<meta property="og:image" content="https://github.com/sharkdp/hexyl/raw/master/doc/logo.svg?sanitize=true">
+<meta property="og:image" content="https://unpluggedcoder.me/images/hexyl.png">
+<meta property="og:image" content="https://unpluggedcoder.me/images/ytop.gif">
+<meta property="og:image" content="https://unpluggedcoder.me/images/procs1.png">
+<meta property="og:image" content="https://unpluggedcoder.me/images/procs2.png">
+<meta property="og:image" content="https://unpluggedcoder.me/images/screen_lsd.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/starship/starship/master/media/logo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif">
+<meta property="og:image" content="https://github.com/fdehau/tui-rs/raw/master/assets/demo.gif">
+<meta property="article:published_time" content="2020-02-18T14:36:20.000Z">
+<meta property="article:modified_time" content="2022-09-20T15:46:38.322Z">
+<meta property="article:author" content="不插电码农">
+<meta property="article:tag" content="Rust">
+<meta property="article:tag" content="Productivity tools">
+<meta property="article:tag" content="ripgrep">
+<meta property="article:tag" content="lsd">
+<meta property="article:tag" content="broot">
+<meta property="article:tag" content="starship">
+<meta property="article:tag" content="procs">
+<meta property="article:tag" content="dua-cli">
+<meta property="article:tag" content="dust">
+<meta property="article:tag" content="dutree">
+<meta property="article:tag" content="inferno">
+<meta property="article:tag" content="dtool">
+<meta property="article:tag" content="ytop">
+<meta property="article:tag" content="bat">
+<meta property="article:tag" content="tui-rs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://unpluggedcoder.me/images/rust_tool.jpg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://unpluggedcoder.me/2020/02/18/RustTools/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="不插电码农" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+    <link href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.css" rel="stylesheet">
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/unpluggedcoder" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">不插电码农</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">A coder, love sketch and drumming.</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Inside the GreatWall</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="Type something..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">Home</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">Archives</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">Categories</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Tags</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">Repository</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">About</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-RustTools" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      那些由Rust打造的高效生产力工具(Updated on 2020-2-25)
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/02/18/RustTools/" class="article-date">
+	  <time datetime="2020-02-18T14:36:20.000Z" itemprop="datePublished">2020-02-18</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Rust/">Rust</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Productivity-tools/" rel="tag">Productivity tools</a>, <a class="article-tag-link-link" href="/tags/Rust/" rel="tag">Rust</a>, <a class="article-tag-link-link" href="/tags/bat/" rel="tag">bat</a>, <a class="article-tag-link-link" href="/tags/broot/" rel="tag">broot</a>, <a class="article-tag-link-link" href="/tags/dtool/" rel="tag">dtool</a>, <a class="article-tag-link-link" href="/tags/dua-cli/" rel="tag">dua-cli</a>, <a class="article-tag-link-link" href="/tags/dust/" rel="tag">dust</a>, <a class="article-tag-link-link" href="/tags/dutree/" rel="tag">dutree</a>, <a class="article-tag-link-link" href="/tags/inferno/" rel="tag">inferno</a>, <a class="article-tag-link-link" href="/tags/lsd/" rel="tag">lsd</a>, <a class="article-tag-link-link" href="/tags/procs/" rel="tag">procs</a>, <a class="article-tag-link-link" href="/tags/ripgrep/" rel="tag">ripgrep</a>, <a class="article-tag-link-link" href="/tags/starship/" rel="tag">starship</a>, <a class="article-tag-link-link" href="/tags/tui-rs/" rel="tag">tui-rs</a>, <a class="article-tag-link-link" href="/tags/ytop/" rel="tag">ytop</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/02/18/RustTools/#comments" class="article-comment-link">Comments</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1.1k(words)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4(minutes)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>最近沉迷于一批<a target="_blank" rel="noopener" href="https://www.rust-lang.org/">Rust</a>编写的生产力工具, 每个都是blazing-fast, 有的还很酷炫. 在这里做个收集分享, 具体安装、教程就不细说了, 自行查阅.</p>
+<span id="more"></span>
+
+<p><img src="/images/rust_tool.jpg" alt="rust_tool"></p>
+<h1 id="ripgrep"><a href="#ripgrep" class="headerlink" title="ripgrep"></a>ripgrep</h1><p>最刁的应该就是<a target="_blank" rel="noopener" href="https://github.com/BurntSushi/ripgrep">ripgrep</a>了, 名称也起得很调皮: <code>R.I.P grep</code>, 意图很明显了, 就是取代grep的, 且实际性能碾压grep. 作者在他的<a target="_blank" rel="noopener" href="https://blog.burntsushi.net/ripgrep/">文章</a>中列举了很多benchmark. 截取一个感受一下:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Command</th>
+<th>Line count</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ripgrep</td>
+<td><code>rg -L -u -tc -n -w &#39;[A-Z]+_SUSPEND&#39;</code></td>
+<td>404</td>
+<td><strong>0.079s</strong></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/gvansickle/ucg">ucg</a></td>
+<td><code>ucg --type=cc -w &#39;[A-Z]+_SUSPEND&#39;</code></td>
+<td>390</td>
+<td>0.163s</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.gnu.org/software/grep/">GNU grep</a></td>
+<td><code>egrep -R -n --include=&#39;*.c&#39; --include=&#39;*.h&#39; -w &#39;[A-Z]+_SUSPEND&#39;</code></td>
+<td>404</td>
+<td>0.611s</td>
+</tr>
+</tbody></table>
+<p>不过, 我用得最多的并不是<code>rg</code>命令, 而是在vim中的<a target="_blank" rel="noopener" href="https://github.com/Yggdroot/LeaderF">LeaderF</a>插件的模糊匹配, 速度也是贼快.</p>
+<h1 id="inferno"><a href="#inferno" class="headerlink" title="inferno"></a>inferno</h1><p><a target="_blank" rel="noopener" href="https://github.com/jonhoo/inferno">inferno</a>这个工具很多人不常用, 但是对我的帮助是最大的. 几乎秒生成🔥火焰图的工具, 和原版<a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph">FlameGraph</a>相比, 速度快了18~20倍.</p>
+<p>贴一个作者的benchmark:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">collapse/dtrace/1       time:   [8.2767 ms 8.2817 ms 8.2878 ms]</span><br><span class="line">                        thrpt:  [159.08 MiB/s 159.20 MiB/s 159.29 MiB/s]</span><br><span class="line">collapse/dtrace/12      time:   [3.8631 ms 3.8819 ms 3.9019 ms]</span><br><span class="line">                        thrpt:  [337.89 MiB/s 339.63 MiB/s 341.28 MiB/s]</span><br><span class="line"></span><br><span class="line">collapse/perf/1         time:   [16.386 ms 16.401 ms 16.416 ms]</span><br><span class="line">                        thrpt:  [182.37 MiB/s 182.53 MiB/s 182.70 MiB/s]</span><br><span class="line">collapse/perf/12        time:   [4.8056 ms 4.8254 ms 4.8460 ms]</span><br><span class="line">                        thrpt:  [617.78 MiB/s 620.41 MiB/s 622.97 MiB/s]</span><br><span class="line"></span><br><span class="line">collapse/sample         time:   [8.9132 ms 8.9196 ms 8.9264 ms]</span><br><span class="line">                        thrpt:  [155.49 MiB/s 155.61 MiB/s 155.72 MiB/s]</span><br><span class="line"></span><br><span class="line">flamegraph              time:   [16.071 ms 16.118 ms 16.215 ms]</span><br><span class="line">                        thrpt:  [38.022 MiB/s 38.250 MiB/s 38.363 MiB/s]</span><br></pre></td></tr></table></figure>
+
+<p>感受一下对比:</p>
+<p><img src="/images/inferno.jpeg" alt="EP1aHvRUcAMjLWG"></p>
+<h1 id="broot"><a href="#broot" class="headerlink" title="broot"></a>broot</h1><p>还在用<code>tree</code>命令吗? 试试<a target="_blank" rel="noopener" href="https://github.com/Canop/broot">broot</a>吧! 交互式的树形结构查找, 一目了然, 关键是毫秒级的查询响应.</p>
+<p><img src="/images/broot.png" alt="broot"></p>
+<h1 id="du"><a href="#du" class="headerlink" title="du"></a>du</h1><h2 id="dua-cli"><a href="#dua-cli" class="headerlink" title="dua-cli"></a>dua-cli</h2><p><a target="_blank" rel="noopener" href="https://github.com/Byron/dua-cli"><strong>dua</strong></a> (-&gt; <em>Disk Usage Analyzer</em>) , 类似<code>du</code>命令, 但是提供交互式的查看方式.</p>
+<p><img src="https://camo.githubusercontent.com/03f7bfbeeef933e2f2aef1e51cace155216b1d8f/68747470733a2f2f61736369696e656d612e6f72672f612f4161465530665045324536313258436a704e67394a654167582e737667" alt="dua-cli"></p>
+<h2 id="dust"><a href="#dust" class="headerlink" title="dust"></a>dust</h2><p>du + rust &#x3D; <a target="_blank" rel="noopener" href="https://github.com/bootandy/dust">dust</a>. 更直观的方式显示du命令. 不过不是常规的树型结构, 而是倒树型.</p>
+<p><img src="https://github.com/bootandy/dust/raw/master/media/snap.png" alt="dust"></p>
+<h2 id="dutree"><a href="#dutree" class="headerlink" title="dutree"></a>dutree</h2><p><a target="_blank" rel="noopener" href="https://github.com/nachoparker/dutree">dutree</a>, <code>du</code>命令+<code>tree</code>命令, 提供 <em>files-only</em> 功能.</p>
+<p><img src="https://github.com/nachoparker/dutree/raw/master/resources/dutree_featured.png" alt="dutree"></p>
+<p>上面三个工具, 由于<code>dua-cli</code>不包含树型等复杂的图形, 所以在统计上速度最快(以<code>--depth 1</code>测试). 各有千秋, 大家可以自选.</p>
+<h1 id="bat"><a href="#bat" class="headerlink" title="bat"></a>bat</h1><p><img src="https://github.com/sharkdp/bat/raw/master/doc/logo-header.svg?sanitize=true" alt="bat"><br>这个<a target="_blank" rel="noopener" href="https://github.com/sharkdp/bat">bat</a>不是我们想的BAT. 目的是取代<code>cat</code>(cat with wings -&gt; bat).  以前一直认为cat就是打印到终端, 用来查看文件而已, 直到看到了bat:</p>
+<p><img src="/images/bat1.png" alt="bat1"></p>
+<p><img src="/images/bat2.png" alt="bat2"></p>
+<p>自动根据文件类型做语法高亮, 好看多了. 还有其它的命令参数, 甚至有一个和<code>ripgrep</code>结合的命令: <code>batgrep</code>, 带高亮地打印前者的输出.</p>
+<h1 id="hexyl"><a href="#hexyl" class="headerlink" title="hexyl"></a>hexyl</h1><p><img src="https://github.com/sharkdp/hexyl/raw/master/doc/logo.svg?sanitize=true" alt="hexyl"></p>
+<p>如果要查看二进制文件内容怎么办? bat只能打印出来告诉你是 &lt;BINARY&gt;. 这时候需要<a target="_blank" rel="noopener" href="https://github.com/sharkdp/hexyl">hexyl</a>, 非常友好的二进制查看工具, 曾经还在苦苦寻找好用GUI工具.</p>
+<p><img src="/images/hexyl.png" alt="hexyl"></p>
+<p>当然还支持很多参数, 自定义查看方式.</p>
+<h1 id="dtool"><a href="#dtool" class="headerlink" title="dtool"></a>dtool</h1><p>除了查看文件内容或者二进制数据外, 我们通常还会计算文件哈希值或者一些其它的文件常见操作, 而<a target="_blank" rel="noopener" href="https://github.com/guoxbin/dtool">dtool</a>这个工具就像一个开发者的小型瑞士军刀, 提供了开发者很多常见命令操作, 如计算哈希值、编码转换等等常见操作. </p>
+<p>convert a string to base64</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo -n abc | dtool s2h | dtool h2b64</span><br><span class="line">YWJj</span><br></pre></td></tr></table></figure>
+
+<p>convert a encoded timestamp to date</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo -n 2c28e75d | dtool nd -tu32 | dtool ts2d</span><br><span class="line">2019-12-04 11:29:48</span><br></pre></td></tr></table></figure>
+
+<p>convert a jpeg to base64</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat pic.jpg | dtool b2h | dtool h2b64</span><br><span class="line">/9j/4AAQSkZJR...</span><br></pre></td></tr></table></figure>
+
+<p>calculate file md5</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat pic.jpg | dtool b2h | dtool hash -a md5</span><br><span class="line">0x1884b72e23b0c93320bac6b050478ff4</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="ytop"><a href="#ytop" class="headerlink" title="ytop"></a>ytop</h1><p>常用的<code>htop</code>命令也有一个Rust的版本, 叫<a target="_blank" rel="noopener" href="https://github.com/cjbassi/ytop">ytop</a>, 样子也是很酷炫.</p>
+<p><img src="/images/ytop.gif" alt="ytop"></p>
+<h1 id="procs"><a href="#procs" class="headerlink" title="procs"></a>procs</h1><p>曾经也是各种记ps命令的参数, 后来用<code>htop</code>. 现在有了<a target="_blank" rel="noopener" href="https://github.com/dalance/procs">procs</a>, 功能上虽不如<code>htop</code>丰富, 但是能够查看docker容器的状态.</p>
+<p><img src="/images/procs1.png" alt="procs1"></p>
+<p><img src="/images/procs2.png" alt="procs2"></p>
+<p>后面再分享两个比较fancy的工具.</p>
+<h1 id="lsd"><a href="#lsd" class="headerlink" title="lsd"></a>lsd</h1><p><a target="_blank" rel="noopener" href="https://github.com/Peltoche/lsd">lsd</a>看名称就是替代<code>ls</code>的, 加了各种<em>icon</em>和高亮, 需要安装<code>nerd</code>字体</p>
+<p><img src="/images/screen_lsd.png" alt="screen_lsd"></p>
+<h1 id="starship"><a href="#starship" class="headerlink" title="starship"></a>starship</h1><p><img src="https://raw.githubusercontent.com/starship/starship/master/media/logo.png" alt="starship_logo"></p>
+<p>光看logo和名字就知道很fancy了, 以模块的哲学来定义shell终端展示.</p>
+<p><img src="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif" alt="starship"></p>
+<p>还有另外一个叫<a target="_blank" rel="noopener" href="https://github.com/nushell/nushell">nushell</a>, 用终端制表的方式打印输出, 和上面几个相比就没有高亮了.</p>
+<h1 id="tui-rs"><a href="#tui-rs" class="headerlink" title="tui-rs"></a>tui-rs</h1><p>最后祭出<a target="_blank" rel="noopener" href="https://github.com/fdehau/tui-rs">tui-rs</a>, 是一个Rust的终端GUI library, 提供各种Widget, 可以用来DIY自己的神器. 包括上面的<code>ytop</code>也是基于tui-rs开发的.</p>
+<p><img src="https://github.com/fdehau/tui-rs/raw/master/assets/demo.gif" alt="tui-rs"></p>
+<p>感谢各位作者和Rust, 给大家带来的这些高效工具, 欢迎推荐👏.</p>
+<p>开了一个仓库用来记录和存放：<a target="_blank" rel="noopener" href="https://github.com/unpluggedcoder/awesome-rust-tools%EF%BC%8C%E4%B8%8D%E5%AE%9A%E6%9C%9F%E6%9B%B4%E6%96%B0%E4%B8%AD%E3%80%82">https://github.com/unpluggedcoder/awesome-rust-tools，不定期更新中。</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/03/16/%E5%9B%BE%E8%AF%B4%E9%87%91%E8%9E%8D%E5%8F%B2/" title="图说金融史"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2020/02/15/Rust%E5%85%A5%E9%97%A8%E5%A4%B1%E8%B4%A5%E4%B9%8BMacros/" title="Rust入门失败之Macros"><span>Older&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/unpluggedcoder" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://twitter.com/unpluggedcoder" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2026 不插电码农
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+    <script defer>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://unpluggedcoder.me/2020/02/18/RustTools/';
+        
+        this.page.identifier = 'RustTools';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'unpluggedcoder' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.3.5/dist/jquery.fancybox.min.js"></script>
+  <script>
+  //利用 FancyBox 实现点击图片放大
+  $(document).ready(function() {
+    $('article img').not('[hidden]').not('.panel-body img').each(function() {
+      var $image = $(this);
+      var imageCaption = $image.attr('alt');
+      var $imageWrapLink = $image.parent('a');
+      if ($imageWrapLink.length < 1) {
+        var src = this.getAttribute('src');
+        var idx = src.lastIndexOf('?');
+        if (idx != -1) {
+          src = src.substring(0, idx);
+        }
+        $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
+      }
+      $imageWrapLink.attr('data-fancybox', 'images');
+      if (imageCaption) {
+        $imageWrapLink.attr('data-caption', imageCaption);
+      }
+    });
+    $().fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+    });
+  });
+  </script>
+
+
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-448E2EFX91"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-448E2EFX91');
+</script>
+
+
+
+
+</body>
+</html>
